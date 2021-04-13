@@ -1,0 +1,103 @@
+<aura:component controller="ApexControllerClass" implements="flexipage:availableForAllPageTypes,force:appHostable"
+    access="global">
+    <!--Atributes-->
+    <!-- Criando uma ação manipuladora que é executada inicialmente -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}" />
+
+    <!-- Criando um atributo que recebe uma Lista -->
+    <aura:attribute name="columns" type="List" />
+
+    <!-- Criando um atributo que recebe uma Lista -->
+    <aura:attribute name="leitores" type="List" />
+
+    <!-- Criando um atributo que recebe uma Booleano, com valor pradão false -->
+    <aura:attribute name="modal" type="Boolean" default="false" />
+
+    <!-- Criando um atributo que recebe um Id -->
+    <aura:attribute name="id" type="Id" />
+
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="nome" type="String" />
+
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="sobrenome" type="String" />
+    
+    <!-- Criando um atributo que recebe um Inteiro -->
+    <aura:attribute name="idade" type="Integer" />
+
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="rg" type="String" />
+
+    <!--Content-->
+    <!-- Crio um card que recebe como título "Lista de leitores" e um icone de Pessoas -->
+    <lightning:card variant="Narrow" title="Lista de leitores" iconName="standard:people">
+        <aura:set attribute="actions">
+            <!-- Crio um botão que executa uma função ao ser clicado (showModal do meu leitorViewController) -->
+            <lightning:button label="Novo" onclick="{!c.showModal}" name="novoLeitor" />
+        </aura:set>
+        <!-- Crio um paragrafo que recebe o tamanho (quantidade de registros) que tenho detro da minha lista de Leitores -->
+        <p class="slds-p-horizontal_small">
+            Total de registros: {! v.leitores.length }
+        </p>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="12">
+                <!-- 
+                    Crio datatable para gerar minha tabela na tela
+                    Essa minha tabela recebe as columns (colunas) definidas na minha função init()
+                    Recebe os dados que são atribuídos ao meu atributo leitores na função searchLeitores()
+                    Possui uma ação por linhas que recebe handleRowAction(), que por sua vez verifica qual ação que deseja executar 
+                -->
+                <lightning:datatable columns="{! v.columns }" data="{! v.leitores }" keyField="id"
+                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true" hideCheckboxColumn="true" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+    <!-- Condição if para esconder e mostrar meu modal -->
+    <aura:if isTrue="{!v.modal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+
+                    <!-- Botão que possui onclick para fechar meu modal -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick="{!c.closeModal}">
+                        <lightning:icon iconName="utility:close" size="medium" variant="bare" />
+                        <span class="slds-assistive-text">Fechar</span>
+                    </button>
+
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Detalhes</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:layout multipleRows="true">
+
+                        <!-- Definição dos inputs que receberá os atributos definidos nesse componente -->
+                        <lightning:layoutItem padding="horizontal-small" size="12">
+                            <lightning:input type="text" value="{!v.nome}" label="Nome:" maxlength="50" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="12">
+                            <lightning:input type="text" value="{!v.sobrenome}" label="Sobrenome:" maxlength="50" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="4">
+                            <lightning:input type="number" value="{!v.idade}" label="Idade:" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="8">
+                            <lightning:input type="text" value="{!v.rg}" label="RG:" maxlength="14" />
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+                </div>
+                <footer class="slds-modal__footer">
+
+                    <!-- Botão que possui onclick para fechar meu modal -->
+                    <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
+
+                    <!-- Botão que possui onclick que recebe a função upsertLeitor() para atualizar ou inserir um leitor -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertLeitor}">Salvar</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

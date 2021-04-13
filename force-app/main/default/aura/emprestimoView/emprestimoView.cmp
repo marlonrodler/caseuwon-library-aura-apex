@@ -1,0 +1,299 @@
+<aura:component controller="ApexControllerClass" implements="flexipage:availableForAllPageTypes,force:appHostable"
+    access="global">
+    <!--Atributes-->
+    <!-- Criando uma ação manipuladora que é executada inicialmente -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}" />
+
+    <!-- Criando um atributo que recebe uma Lista -->
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="livroColumns" type="List" />
+    <aura:attribute name="leitorColumns" type="List" />
+
+    <!-- Criando um atributo que recebe uma Lista -->
+    <aura:attribute name="emprestimos" type="List" />
+    <aura:attribute name="livros" type="List" />
+    <aura:attribute name="leitores" type="List" />
+
+    <!-- Criando um atributo que recebe uma Booleano, com valor pradão false -->
+    <aura:attribute name="modal" type="Boolean" default="false" />
+    <aura:attribute name="detailModal" type="Boolean" default="false" />
+    <aura:attribute name="leitorModal" type="Boolean" default="false" />
+
+    <!-- Criando um atributo que recebe uma lista de ids de emprestimo -->
+    <aura:attribute name="emprestimoIds" type="List" />
+
+    <!-- Criando um atributo que recebe um Id -->
+    <aura:attribute name="id" type="Id" />
+    <aura:attribute name="leitorId" type="Id" />
+    <aura:attribute name="livroId" type="Id" />
+
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="keyword" type="String" default="" />
+
+    <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
+    <aura:attribute name="filters" type="List" default="[
+        { id: 1, label: 'Todos', value: '*', selected: true },
+        { id: 2, label: 'Devolvidos', value: 'T' },
+        { id: 3, label: 'Pendentes de devolução', value: 'F' }
+    ]" />
+
+    <!-- Criando um atributo que recebe o valor da lista filters que foi selecionada -->
+    <aura:attribute name="selectedFilter" type="String" />
+
+    <!-- Criando um atributo que recebe uma lista das linha selecionadas para devolução -->
+    <aura:attribute name="selectedRows" type="List" />
+
+    <!-- Criando os atributos para receber os dados de entrada do usuário ou os dados que estão vindo do meu back-end -->
+    <aura:attribute name="titulo" type="String" />
+    <aura:attribute name="autor" type="String" />
+    <aura:attribute name="nome" type="String" />
+    <aura:attribute name="sobrenome" type="String" />
+    <aura:attribute name="devolvido" type="Boolean" default="false" />
+    <aura:attribute name="dataEmprestimo" type="Date" />
+    <aura:attribute name="dataDevolucao" type="Date" />
+
+    <!--Content-->
+    <!-- Crio um card que recebe como título "Lista de emprestimos" e um icone de Pessoas -->
+    <lightning:card variant="Narrow" title="Lista de empréstimos" iconName="standard:partners">
+        <aura:set attribute="actions">
+            <!-- Crio um botão que executa uma função ao ser clicado (updateEmprestimosDevolvidos do meu emprestimoViewController) -->
+            <lightning:button label="Devolver" onclick="{!c.updateEmprestimosDevolvidos}" name="novoLeitor" />
+            <!-- Crio um botão que executa uma função ao ser clicado (showModal do meu emprestimoViewController) -->
+            <lightning:button label="Novo" onclick="{!c.showModal}" name="novoLeitor" />
+        </aura:set>
+        <lightning:layout multipleRows="true" verticalAlign="end">
+
+            <lightning:layoutItem padding="horizontal-small" size="6">
+                <lightning:input aura:id="enter-search" name="enter-search"
+                    label="Insira a palavra chave e pressione 'Pesquisar'" type="search" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="4">
+                <!-- 
+                    Defino um select que recebe o valor que for selecionado para a minha selectedFilter
+                    E onchange, onde toda vez que trocar de uma valor, disparo essa função
+                -->
+                <lightning:select name="filterId" label="Selecione status de devolvido:" aura:id="filterId"
+                    value="{!v.selectedFilter}" onchange="{! c.searchEmprestimos }">
+                    <!-- Defino os valores em items para percorrer -->
+                    <aura:iteration items="{!v.filters}" var="filter">
+                        <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo filters -->
+                        <option text="{!filter.label}" value="{!filter.value}" selected="{!filter.selected}" />
+                    </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="2">
+                <!-- Crio um botão recebendo um onclick que dispara aa função handleClick -->
+                <lightning:button label="Pesquisar" iconName="utility:search" iconPosition="left"
+                    onclick="{! c.handleClick }" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+        <!-- Crio um paragrafo que recebe o tamanho (quantidade de registros) que tenho detron da minha lista de emprestimos -->
+        <p class="slds-p-horizontal_small">
+            Total de registros: {! v.emprestimos.length }
+        </p>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="12">
+                <!-- 
+                    Crio datatable para gerar minha tabela na tela
+                    Essa minha tabela recebe as columns (colunas) definidas na minha função init()
+                    Recebe os dados que são atribuídos ao meu atributo emprestimos na função searchEmprestimos()
+                    Possui uma ação por linha que recebe handleRowAction(), que por sua vez verifica qual ação que deseja executar
+                    Possui disparo de ação por checkbox handleSelectedEmprestimos
+                -->
+                <lightning:datatable columns="{! v.columns }" data="{! v.emprestimos }" keyField="id"
+                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
+                    onrowselection="{! c.handleSelectedEmprestimos }" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+    <!-- Condição if para esconder e mostrar meu modal -->
+    <aura:if isTrue="{!v.modal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+
+                    <!-- Botão que possui onclick para fechar meu modal -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick="{!c.closeModal}">
+                        <lightning:icon iconName="utility:close" size="medium" variant="bare" />
+                        <span class="slds-assistive-text">Fechar</span>
+                    </button>
+
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar Livros Disponível</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:layout multipleRows="true" verticalAlign="end">
+
+                        <lightning:layoutItem size="8" padding="around-medium">
+                            <!-- Input para atribuir um valor a keyword -->
+                            <lightning:input type="text" value="{!v.keyword}"
+                                label="Informe o livro que deseja realizar o empréstimo" />
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem size="4" padding="around-medium">
+                            <!-- Botão para disparar função searchLivros -->
+                            <lightning:button label="Pesquisar" iconName="utility:search" iconPosition="left"
+                                onclick="{! c.searchLivros }" />
+                        </lightning:layoutItem>
+
+                        <!-- Mostro o tamanho da minha lista livros -->
+                        <p class="slds-p-horizontal_small">
+                            Total de registros: {! v.livros.length }
+                        </p>
+
+                        <!-- 
+                            Crio datatable para gerar minha tabela no modal
+                            Essa minha tabela recebe as livroColumns (colunas dos livros) definidas na minha função init()
+                            Recebe os dados que são atribuídos ao meu atributo livros na função searchLivros()
+                            Possui disparo de ação por checkbox handleSelectedLivro
+                        -->
+                        <lightning:datatable columns="{! v.livroColumns }" data="{! v.livros }" keyField="id"
+                            showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
+                            onrowselection="{! c.handleSelectedLivro }" />
+
+                    </lightning:layout>
+                </div>
+                <footer class="slds-modal__footer">
+
+                    <!-- Botão que possui onclick para fechar meu modal -->
+                    <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
+
+                    <!-- Botão que possui onclick que recebe a função validateLivroId() -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.validateLivroId}">Próximo</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+
+    <!-- Condição if para esconder e mostrar meu leitorModal -->
+    <aura:if isTrue="{!v.leitorModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+
+                    <!-- Botão que possui onclick para fechar meu leitorModal -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick="{!c.closeModal}">
+                        <lightning:icon iconName="utility:close" size="medium" variant="bare" />
+                        <span class="slds-assistive-text">Fechar</span>
+                    </button>
+
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar Leitores para o Empréstimo
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:layout multipleRows="true" verticalAlign="end">
+
+                        <lightning:layoutItem size="8" padding="around-medium">
+                            <!-- Input para atribuir um valor a keyword -->
+                            <lightning:input type="text" value="{!v.keyword}"
+                                label="Informe o leitor que deseja realizar o empréstimo" />
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem size="4" padding="around-medium">
+                            <!-- Botão para disparar função searchLeitores -->
+                            <lightning:button label="Pesquisar" iconName="utility:search" iconPosition="left"
+                                onclick="{! c.searchLeitores }" />
+                        </lightning:layoutItem>
+
+                        <!-- Mostro o tamanho da minha lista leitores -->
+                        <p class="slds-p-horizontal_small">
+                            Total de registros: {! v.leitores.length }
+                        </p>
+
+                        <!-- 
+                            Crio datatable para gerar minha tabela no modal
+                            Essa minha tabela recebe as leitorColumns (colunas dos leitores) definidas na minha função init()
+                            Recebe os dados que são atribuídos ao meu atributo livros na função searchLeitores()
+                            Possui disparo de ação por checkbox handleSelectedLeitor
+                        -->
+                        <lightning:datatable columns="{! v.leitorColumns }" data="{! v.leitores }" keyField="id"
+                            showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
+                            onrowselection="{! c.handleSelectedLeitor }" />
+
+                    </lightning:layout>
+                </div>
+                <footer class="slds-modal__footer">
+
+                    <!-- Botão que possui onclick para fechar meu modal -->
+                    <button class="slds-button slds-button_neutral" onclick="{!c.backModal}">voltar</button>
+
+                    <!-- Botão que possui onclick que recebe a função upsertEmprestimo() para atualizar ou inserir um emprestimo -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertEmprestimo}">Salvar</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+
+    <!-- Condição if para esconder e mostrar meu detailModal -->
+    <aura:if isTrue="{!v.detailModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+
+                    <!-- Botão que possui onclick para fechar meu detailModal -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick="{!c.closeModal}">
+                        <lightning:icon iconName="utility:close" size="medium" variant="bare" />
+                        <span class="slds-assistive-text">Fechar</span>
+                    </button>
+
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Detalhes</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:layout multipleRows="true" verticalAlign="end">
+
+                        <!-- Definição dos inputs que receberá os atributos definidos nesse componente -->
+                        <lightning:layoutItem padding="horizontal-small" size="12">
+                            <lightning:input type="checkbox" label="Devolvido" name="devolvido" checked="{!v.devolvido}"
+                                value="{!v.devolvido}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="text" value="{!v.titulo}" label="Título do Livro:" disabled="true" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="text" value="{!v.autor}" label="Autor do Livro:" disabled="true" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="text" value="{!v.nome}" label="Nome do(a) Leitor(a):"
+                                disabled="true" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="text" value="{!v.sobrenome}" label="Sobrenome do(a) Leitor(a):"
+                                disabled="true" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="date" name="input7" label="Data do empréstimo" disabled="true"
+                                value="{!v.dataEmprestimo}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="date" name="input7" label="Data da devolução" disabled="true"
+                                value="{!v.dataDevolucao}" />
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+                </div>
+                <footer class="slds-modal__footer">
+
+                    <!-- Botão que possui onclick para fechar meu detailModal -->
+                    <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
+
+                    <!-- Botão que possui onclick que recebe a função upsertLeitor() para atualizar ou inserir um leitor -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertEmprestimo}">Salvar</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>
