@@ -21,6 +21,9 @@
 
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="sobrenome" type="String" />
+
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="email" type="String" />
     
     <!-- Criando um atributo que recebe um Inteiro -->
     <aura:attribute name="idade" type="Integer" />
@@ -73,17 +76,20 @@
                     <lightning:layout multipleRows="true">
 
                         <!-- Definição dos inputs que receberá os atributos definidos nesse componente -->
-                        <lightning:layoutItem padding="horizontal-small" size="12">
+                        <lightning:layoutItem padding="horizontal-small" size="6">
                             <lightning:input type="text" value="{!v.nome}" label="Nome:" maxlength="50" />
                         </lightning:layoutItem>
-                        <lightning:layoutItem padding="horizontal-small" size="12">
+                        <lightning:layoutItem padding="horizontal-small" size="6">
                             <lightning:input type="text" value="{!v.sobrenome}" label="Sobrenome:" maxlength="50" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="12">
+                            <lightning:input type="email" value="{!v.email}" label="E-mail:" maxlength="50" required="true"/>
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="4">
                             <lightning:input type="number" value="{!v.idade}" label="Idade:" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="8">
-                            <lightning:input type="text" value="{!v.rg}" label="RG:" maxlength="14" />
+                            <lightning:input type="text" value="{!v.rg}" label="RG:" maxlength="14" required="true"/>
                         </lightning:layoutItem>
 
                     </lightning:layout>

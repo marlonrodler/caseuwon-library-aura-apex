@@ -11,6 +11,7 @@
         component.set('v.columns', [
             { label: 'Nome do leitor', fieldName: 'Nome__c', type: 'text' },
             { label: 'Sobrenome do leitor', fieldName: 'Sobrenome__c', type: 'text' },
+            { label: 'E-mail do leitor', fieldName: 'Email__c', type: 'text' },
             { label: 'Idade do leitor', fieldName: 'Idade__c', type: 'number' },
             { label: 'RG do leitor', fieldName: 'RG__c', type: 'text' },
             { type: 'action', typeAttributes: { rowActions: actions } }
@@ -86,6 +87,7 @@
                         component.set('v.sobrenome', returnValue.Sobrenome__c);
                         component.set('v.idade', returnValue.Idade__c);
                         component.set('v.rg', returnValue.RG__c);
+                        component.set('v.email', returnValue.Email__c);
                     }
                 });
 
@@ -178,9 +180,12 @@
             nome: component.get("v.nome"),
             sobrenome: component.get("v.sobrenome"),
             rg: component.get("v.rg"),
+            email: component.get("v.email"),
             idade: component.get("v.idade")
         });
 
+
+        if ((component.get("v.rg") != '') && (component.get("v.email") != ''))
         // Realizo um callback para validar e pegar a resposta do meu back-end
         action.setCallback(this, function (response) {
             // Atribuo o estado da resposta na variavel state
@@ -260,6 +265,7 @@
         component.set('v.sobrenome', '');
         component.set('v.idade', null);
         component.set('v.rg', '');
+        component.set('v.email', '');
 
         // Seto para minha variável modal do componente leitorView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -273,6 +279,7 @@
         component.set('v.sobrenome', '');
         component.set('v.idade', null);
         component.set('v.rg', '');
+        component.set('v.email', '');
 
         // Seto para minha variável modal do componente leitorView como falsa, fechando assim meu modal
         component.set('v.modal', false);

@@ -13,6 +13,7 @@ public with sharing class LeitorServiceClass
                 Nome__c,
                 Sobrenome__c,
                 RG__c,
+                Email__c,
                 Idade__c
             FROM 
                 Leitor__c
@@ -29,6 +30,7 @@ public with sharing class LeitorServiceClass
                 Nome__c,
                 Sobrenome__c,
                 RG__c,
+                Email__c,
                 Idade__c
             FROM 
                 Leitor__c
@@ -46,6 +48,7 @@ public with sharing class LeitorServiceClass
                 Nome__c,
                 Sobrenome__c,
                 RG__c,
+                Email__c,
                 Idade__c
             FROM 
                 Leitor__c
@@ -54,7 +57,7 @@ public with sharing class LeitorServiceClass
     }
 
     // Defino método para atualizar ou inserir um Leitor
-    public Leitor__c atualizaInsereLeitor(Id leitorId, String nome, String sobrenome, String rg, Integer idade) 
+    public Leitor__c atualizaInsereLeitor(Id leitorId, String nome, String sobrenome, String rg, String email, Integer idade) 
     {
         // Instancio meu objeto leitor
         Leitor__c leitor = new Leitor__c();
@@ -81,6 +84,11 @@ public with sharing class LeitorServiceClass
         {
             leitor.RG__c = rg;
         }
+        
+        if (email != '') 
+        {
+            leitor.Email__c = email;
+        }
 
         if (idade != null) 
         {
@@ -91,8 +99,11 @@ public with sharing class LeitorServiceClass
             // Realizo o upsert de "leitor"
             upsert leitor;
         } catch (DmlException e) {
-            // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LeitorServiceClassException('Já possui um registro com o RG: ' + rg);
+            if (rg != '') 
+            {
+                // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
+                throw new LeitorServiceClassException(e);
+            }
         }
 
         // Retorno a lista do Leitor que foi inserido ou atualizado através do método buscaLeitorPorId()

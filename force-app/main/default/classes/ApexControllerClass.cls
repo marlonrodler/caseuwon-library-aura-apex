@@ -41,12 +41,12 @@ public with sharing class ApexControllerClass
     // Deixo disponível para o Aura Component
     @AuraEnabled
     // Metodo estático que atualiza ou insere leitor, retornando um único leitor
-    public static Leitor__c atualizaInsereLeitor(Id leitorId, String nome, String sobrenome, String rg, Integer idade) 
+    public static Leitor__c atualizaInsereLeitor(Id leitorId, String nome, String sobrenome, String rg, String email, Integer idade) 
     {
         // Instancio um objeto da classe LeitorServiceClass
         LeitorServiceClass leitor = new LeitorServiceClass();
         // Retorno o método criado na classe
-        return leitor.atualizaInsereLeitor(leitorId, nome, sobrenome, rg, idade);
+        return leitor.atualizaInsereLeitor(leitorId, nome, sobrenome, rg, email, idade);
     }
 
     // Deixo disponível para o Aura Component
