@@ -1,6 +1,6 @@
-public with sharing class EmprestimoServiceClass 
+public with sharing class EmprestimoDAO 
 {
-    public EmprestimoServiceClass() 
+    public EmprestimoDAO() 
     {
 
     }
@@ -147,13 +147,13 @@ public with sharing class EmprestimoServiceClass
         // Instancio uma lista de emprestimos
         List<Emprestimo__c> emprestimos = new List<Emprestimo__c>();
 
-        // Instacio minha classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instacio minha classe LivroDAO
+        LivroDAO livro = new LivroDAO();
 
         // Verifico se minha lista de emprestimoIds é vazia
         if (emprestimoIds.isEmpty()) 
         {
-            throw new EmprestimoServiceClassException('Adicione pelo menos um livro para a devolução');
+            throw new EmprestimoDAOException('Adicione pelo menos um livro para a devolução');
         }
 
         // Percorro minha lista emprestimoIds
@@ -181,8 +181,8 @@ public with sharing class EmprestimoServiceClass
     // Defino método para atualizar ou inserir um emprestimo
     public Emprestimo__c atualizaInsereEmprestimo(Id emprestimoId, Id livroId, Id leitorId, Boolean devolvido) 
     {
-        // Instacio minha classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instacio minha classe LivroDAO
+        LivroDAO livro = new LivroDAO();
 
         // Instancio um emprestimo
         Emprestimo__c emprestimo = new Emprestimo__c();
@@ -221,7 +221,7 @@ public with sharing class EmprestimoServiceClass
                 // Verifico se calcQuantidade é menor que 0
                 if (rsLivro.QuantidadeDisponivel__c == 0) 
                 {
-                    throw new EmprestimoServiceClassException('Livro não disponível');
+                    throw new EmprestimoDAOException('Livro não disponível');
                 }
             }
             // Realizo o update de rsLivro
@@ -240,7 +240,7 @@ public with sharing class EmprestimoServiceClass
             upsert emprestimo;
         } catch (DmlException e) {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new EmprestimoServiceClassException('Entrar em contato com o suporte');
+            throw new EmprestimoDAOException('Entrar em contato com o suporte');
         }
 
         return buscaEmprestimoPorId(emprestimo.Id);
@@ -254,12 +254,12 @@ public with sharing class EmprestimoServiceClass
 
         // Valido se o Devolvido é false, para nao deixa-lo ser excluido
         if (emprestimo.Devolvido__c == false) {
-            throw new EmprestimoServiceClassException('Você não pode deletar um livro pendente de devolução');
+            throw new EmprestimoDAOException('Você não pode deletar um livro pendente de devolução');
         }
 
         delete emprestimo;
     }
 
-    // Defino um método EmprestimoServiceClassException que puxa as especificidades da classe Exception 
-    public class EmprestimoServiceClassException extends Exception {}
+    // Defino um método EmprestimoDAOException que puxa as especificidades da classe Exception 
+    public class EmprestimoDAOException extends Exception {}
 }

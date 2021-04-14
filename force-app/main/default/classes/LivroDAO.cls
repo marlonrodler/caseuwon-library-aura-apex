@@ -1,6 +1,7 @@
-public with sharing class LivroServiceClass 
+public with sharing class LivroDAO 
 {
-    public LivroServiceClass() {
+    public LivroDAO() 
+    {
 
     }
 
@@ -122,7 +123,7 @@ public with sharing class LivroServiceClass
         if ( livro.QuantidadeDisponivel__c < 0 ) 
         {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LivroServiceClassException('Verifique sua quantidade disponível, não pode ser menor que 0 (zero).');
+            throw new LivroDAOException('Verifique sua quantidade disponível, não pode ser menor que 0 (zero).');
         }
 
         try {
@@ -130,7 +131,7 @@ public with sharing class LivroServiceClass
             upsert livro;
         } catch (DmlException e) {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LivroServiceClassException('Já possui um registro com o código: ' + codigo);
+            throw new LivroDAOException('Já possui um registro com o código: ' + codigo);
         }
 
         // Retorno o Livro que foi inserido ou atualizado através do método buscaLivroPorId()
@@ -140,8 +141,8 @@ public with sharing class LivroServiceClass
     // Defino método para deletar um Livro através do parametro livroId
     public void deletaLivro(Id livroId) 
     {
-        // Instancio a classe EmprestimoServiceClass para utilizar seus métodos
-        EmprestimoServiceClass emprestimo = new EmprestimoServiceClass();
+        // Instancio a classe EmprestimoDAO para utilizar seus métodos
+        EmprestimoDAO emprestimo = new EmprestimoDAO();
 
         // Instancio um objeto Livro para realizar a chamada do método buscaLivroPorId
         Livro__c livro = buscaLivroPorId(livroId);
@@ -151,13 +152,13 @@ public with sharing class LivroServiceClass
         if ( !emprestimo.buscaEmprestimoPorLivro(livroId).isEmpty() ) 
         {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LivroServiceClassException('Livro não pode ser deletado, há empréstimos associados.');
+            throw new LivroDAOException('Livro não pode ser deletado, há empréstimos associados.');
         } 
 
         // Realizo o delete de "livro"
         delete livro;
     }
     
-    // Defino um método LivroServiceClassException que puxa as especificidades da classe Exception 
-    public class LivroServiceClassException extends Exception {}
+    // Defino um método LivroDAOException que puxa as especificidades da classe Exception 
+    public class LivroDAOException extends Exception {}
 }

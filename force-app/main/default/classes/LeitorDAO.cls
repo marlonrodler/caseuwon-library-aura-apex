@@ -1,6 +1,6 @@
-public with sharing class LeitorServiceClass 
+public with sharing class LeitorDAO 
 {
-    public LeitorServiceClass() {
+    public LeitorDAO() {
 
     }
 
@@ -102,12 +102,12 @@ public with sharing class LeitorServiceClass
 
             if (e.getDmlType(0) == StatusCode.INVALID_EMAIL_ADDRESS) {
                 // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-                throw new LeitorServiceClassException('Formato de e-mail inválido!');
+                throw new LeitorDAOException('Formato de e-mail inválido!');
             }
 
             if (e.getDmlType(0) == StatusCode.DUPLICATE_VALUE) {
                 // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-                throw new LeitorServiceClassException('E-mail ou RG duplicados!');
+                throw new LeitorDAOException('E-mail ou RG duplicados!');
             }
         }
 
@@ -118,8 +118,8 @@ public with sharing class LeitorServiceClass
     // Defino método para deletar um Leitor através do parametro leitorId
     public void deletaLeitor(Id leitorId) 
     {
-        // Instancio a classe EmprestimoServiceClass para utilizar seus métodos
-        EmprestimoServiceClass emprestimo = new EmprestimoServiceClass();
+        // Instancio a classe EmprestimoDAO para utilizar seus métodos
+        EmprestimoDAO emprestimo = new EmprestimoDAO();
 
         // Instancio um objeto Leitor para realizar a chamada do método buscaLeitorPorId
         Leitor__c leitor = buscaLeitorPorId(leitorId);
@@ -129,13 +129,13 @@ public with sharing class LeitorServiceClass
         if ( !emprestimo.buscaEmprestimoPorLeitor(leitorId).isEmpty() ) 
         {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LeitorServiceClassException('Leitor não pode ser deletado, há empréstimos associados.');
+            throw new LeitorDAOException('Leitor não pode ser deletado, há empréstimos associados.');
         } 
 
         // Realizo o delete de "leitor"
         delete leitor;
     }
 
-    // Defino um método LeitorServiceClassException que puxa as especificidades da classe Exception 
-    public class LeitorServiceClassException extends Exception {}
+    // Defino um método LeitorDAOException que puxa as especificidades da classe Exception 
+    public class LeitorDAOException extends Exception {}
 }
