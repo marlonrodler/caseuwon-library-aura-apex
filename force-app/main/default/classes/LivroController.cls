@@ -9,8 +9,8 @@ public with sharing class LivroController {
     // Metodo estático que retorna uma lista de Livro
     public static List<Livro__c> buscaLivros() 
     {
-        // Instancio um objeto da classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instancio um objeto da classe LivroDAO
+        LivroDAO livro = new LivroDAO();
         // Retorno o método criado na classe
         return livro.buscaLivros();
     }
@@ -20,8 +20,8 @@ public with sharing class LivroController {
     // Metodo estático que retorna um único livro, através do parametro livroId
     public static Livro__c buscaLivroPorId(Id livroId) 
     {
-        // Instancio um objeto da classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instancio um objeto da classe LivroDAO
+        LivroDAO livro = new LivroDAO();
         // Retorno o método criado na classe
         return livro.buscaLivroPorId(livroId);
     }
@@ -31,8 +31,8 @@ public with sharing class LivroController {
     // Metodo estático que retorna uma lista de livros, através do parametro titulo
     public static List<Livro__c> buscaLivrosPorTitulo(String titulo) 
     {
-        // Instancio um objeto da classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instancio um objeto da classe LivroDAO
+        LivroDAO livro = new LivroDAO();
         // Retorno o método criado na classe
         return livro.buscaLivrosPorTitulo(titulo);
     }
@@ -42,8 +42,8 @@ public with sharing class LivroController {
     // Metodo estático que atualiza ou insere livro, retornando um único livro
     public static Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade) 
     {
-        // Instancio um objeto da classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instancio um objeto da classe LivroDAO
+        LivroDAO livro = new LivroDAO();
         // Retorno o método criado na classe
         return livro.atualizaInsereLivro(livroId, codigo, titulo, autor, quantidade);
     }
@@ -53,8 +53,8 @@ public with sharing class LivroController {
     // Metodo estático recebe Id como parametro para deletar um livro
     public static void deletaLivro(Id livroId) 
     {
-        // Instancio um objeto da classe LivroServiceClass
-        LivroServiceClass livro = new LivroServiceClass();
+        // Instancio um objeto da classe LivroDAO
+        LivroDAO livro = new LivroDAO();
         // Chamo o método deletar da classe instanciada
         livro.deletaLivro(livroId);
     }
