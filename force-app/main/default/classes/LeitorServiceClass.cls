@@ -99,10 +99,15 @@ public with sharing class LeitorServiceClass
             // Realizo o upsert de "leitor"
             upsert leitor;
         } catch (DmlException e) {
-            if (rg != '') 
-            {
+
+            if (e.getDmlType(0) == StatusCode.INVALID_EMAIL_ADDRESS) {
                 // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-                throw new LeitorServiceClassException(e);
+                throw new LeitorServiceClassException('Formato de e-mail inválido!');
+            }
+
+            if (e.getDmlType(0) == StatusCode.DUPLICATE_VALUE) {
+                // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
+                throw new LeitorServiceClassException('E-mail ou RG duplicados!');
             }
         }
 

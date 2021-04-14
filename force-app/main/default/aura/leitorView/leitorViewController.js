@@ -184,75 +184,76 @@
             idade: component.get("v.idade")
         });
 
+        if ((component.get("v.rg") != '') && (component.get("v.email") != '')) {
+            // Realizo um callback para validar e pegar a resposta do meu back-end
+            action.setCallback(this, function (response) {
+                // Atribuo o estado da resposta na variavel state
+                let state = response.getState();
 
-        if ((component.get("v.rg") != '') && (component.get("v.email") != ''))
-        // Realizo um callback para validar e pegar a resposta do meu back-end
-        action.setCallback(this, function (response) {
-            // Atribuo o estado da resposta na variavel state
-            let state = response.getState();
+                // Pego na variável de ambiente o meu showToast
+                var toastEvent = $A.get("e.force:showToast");
 
-            // Pego na variável de ambiente o meu showToast
-            var toastEvent = $A.get("e.force:showToast");
+                // Verifico de a resposta é SUCCESS
+                if (state == 'SUCCESS') {
+                    // Realizo a chamada na função searchLeitores() para atualizar a lista de leitores
+                    var searchLeitores = component.get('c.searchLeitores');
 
-            // Verifico de a resposta é SUCCESS
-            if (state == 'SUCCESS') {
-                // Realizo a chamada na função searchLeitores() para atualizar a lista de leitores
-                var searchLeitores = component.get('c.searchLeitores');
+                    // Atribuo como false a minha variavel modal, para esconder meu modal
+                    component.set('v.modal', false);
 
-                // Atribuo como false a minha variavel modal, para esconder meu modal
-                component.set('v.modal', false);
+                    // Verifico se o Id é nulo, se sim, retorno um toastEvent diferente
+                    if (component.get("v.id") == null) {
+                        // Defino os paramentros de entrada no meu toastEvent
+                        toastEvent.setParams({
+                            "title": "Successo!",
+                            "message": "Leitor criado com sucesso.",
+                            "type": "success"
+                        });
 
-                // Verifico se o Id é nulo, se sim, retorno um toastEvent diferente
-                if (component.get("v.id") == null) {
-                    // Defino os paramentros de entrada no meu toastEvent
-                    toastEvent.setParams({
-                        "title": "Successo!",
-                        "message": "Leitor criado com sucesso.",
-                        "type": "success"
-                    });
+                    }
+                    // Caso Id possuir um valor
+                    else {
+                        // Defino os paramentros de entrada no meu toastEvent
+                        toastEvent.setParams({
+                            "title": "Successo!",
+                            "message": "Leitor atualizado com sucesso.",
+                            "type": "success"
+                        });
+                    }
 
-                }
-                // Caso Id possuir um valor
+                    // Disparo o toastEvent
+                    toastEvent.fire();
+
+                    // Coloco na fila minha função searchLeitores()
+                    $A.enqueueAction(searchLeitores);
+                }// Caso state retorne como diferente de SUCESSO
                 else {
-                    // Defino os paramentros de entrada no meu toastEvent
+                    // Pego o erro da minha resposta
+                    let errors = response.getError();
+                    console.log(errors);
+                    // Atribuo uma mensagem de erro padrão
+                    let message = 'Erro desconhecido';
+
+                    // Valido se minha variável erro possui algum valor
+                    if (errors && Array.isArray(errors) && errors.length > 0) {
+
+                        // Sobreescrevo minha mensagem padrão com o que está vindo de resposta
+                        message = errors[0].message;
+                    }
+
+                    // Defino os paramentros de entrada para toastEvent
                     toastEvent.setParams({
-                        "title": "Successo!",
-                        "message": "Leitor atualizado com sucesso.",
-                        "type": "success"
+                        "title": "Erro!",
+                        "message": message,
+                        "type": "error"
                     });
+
+                    // Disparo meu toastEvent
+                    toastEvent.fire();
                 }
+            });
+        }
 
-                // Disparo o toastEvent
-                toastEvent.fire();
-
-                // Coloco na fila minha função searchLeitores()
-                $A.enqueueAction(searchLeitores);
-            }// Caso state retorne como diferente de SUCESSO
-            else {
-                // Pego o erro da minha resposta
-                let errors = response.getError();
-
-                // Atribuo uma mensagem de erro padrão
-                let message = 'Erro desconhecido';
-
-                // Valido se minha variável erro possui algum valor
-                if (errors && Array.isArray(errors) && errors.length > 0) {
-
-                    // Sobreescrevo minha mensagem padrão com o que está vindo de resposta
-                    message = errors[0].message;
-                }
-
-                // Defino os paramentros de entrada para toastEvent
-                toastEvent.setParams({
-                    "title": "Erro!",
-                    "message": message,
-                    "type": "error"
-                });
-
-                // Disparo meu toastEvent
-                toastEvent.fire();
-            }
-        });
         // Coloco na fila minha chamada action
         $A.enqueueAction(action);
     },
