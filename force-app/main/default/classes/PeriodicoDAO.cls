@@ -8,7 +8,8 @@ public with sharing class PeriodicoDAO {
         return [
             SELECT 
                 id, 
-                Nome__c
+                Nome__c,
+                Categoria__c
             FROM 
                 Periodico__c
             ORDER BY Nome__c DESC
@@ -20,7 +21,8 @@ public with sharing class PeriodicoDAO {
         return [
             SELECT 
                 id, 
-                Nome__c
+                Nome__c,
+                Categoria__c
             FROM 
                 Periodico__c
             WHERE id = :periodicoId
@@ -47,9 +49,9 @@ public with sharing class PeriodicoDAO {
         return buscaPeriodicoPorId(periodico.Id);
     }
 
-    public void deletaPeriodico() {
+    public void deletaPeriodico(Id periodoId) {
 
-        Periodo__c periodo = buscaPeriodoPorId(periodoId);
+        Periodico__c periodo = buscaPeriodicoPorId(periodoId);
 
         delete periodo;
     }

@@ -13,7 +13,7 @@ public with sharing class AssinaturaDAO {
                 TipoAssinatura__c
             FROM 
                 Assinatura__c
-            ORDER BY Nome__c DESC
+            ORDER BY Name DESC
         ];
     }
 
@@ -68,7 +68,7 @@ public with sharing class AssinaturaDAO {
         return buscaAssinaturaPorId(assinatura.Id);
     }
 
-    public void deletaAssinatura() {
+    public void deletaAssinatura(Id assinaturaId) {
 
         Assinatura__c assinatura = buscaAssinaturaPorId(assinaturaId);
 
