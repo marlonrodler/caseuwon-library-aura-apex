@@ -51,8 +51,8 @@ public with sharing class PublicacaoDAO {
             throw new PublicacaoDAOException('Falha. O(s) seguinte(s) erro(s) foram encontrados: ' + e.getMessage());
         }
 
-        // Retorno a lista do Leitor que foi inserido ou atualizado através do método buscaLeitorPorId()
-        return buscaLeitorPorId(leitor.Id);
+        // Retorno a lista do Leitor que foi inserido ou atualizado através do método buscaPublicacaoPorId()
+        return buscaPublicacaoPorId(publicacao.Id);
     }
 
     public void deletaPublicacao(Id publicacaoId){
