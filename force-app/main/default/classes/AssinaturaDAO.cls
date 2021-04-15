@@ -10,7 +10,8 @@ public with sharing class AssinaturaDAO {
                 id, // Buscar relacionamentos
                 Leitor__c,
                 Periodico__c,
-                TipoAssinatura__c
+                TipoAssinatura__c,
+                DataAssinatura__c
             FROM 
                 Assinatura__c
             ORDER BY Name DESC
@@ -24,7 +25,8 @@ public with sharing class AssinaturaDAO {
                 id, // Buscar relacionamentos
                 Leitor__c,
                 Periodico__c,
-                TipoAssinatura__c
+                TipoAssinatura__c,
+                DataAssinatura__c
             FROM
                 Assinatura__c
             WHERE id = :assinaturaId
@@ -52,7 +54,7 @@ public with sharing class AssinaturaDAO {
             // Verifico se o parametro livroId não está vindo como nulo (vazio)
             if (periodicoId != null) 
             {
-                // Atribuo leitorId para o Leitor__c de assinatura
+                // Atribuo periodicoId para o Periodico__c de assinatura
                 assinatura.Periodico__c = periodicoId;
             }
         }
@@ -62,7 +64,7 @@ public with sharing class AssinaturaDAO {
             upsert assinatura;
         } catch (DmlException e) {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new AssinaturaDAOException('Entrar em contato com o suporte');
+            throw new AssinaturaDAOException('Entrar em contato com o suporte: ' + e);
         }
 
         return buscaAssinaturaPorId(assinatura.Id);
