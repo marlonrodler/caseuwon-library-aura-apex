@@ -29,7 +29,7 @@ public with sharing class PeriodicoDAO {
         ];
     }
 
-    public Periodico__c atualizaInserePeriodico(Id periodicoId, String nome) {
+    public Periodico__c atualizaInserePeriodico(Id periodicoId, String nome, String categoria) {
         // Instancio meu objeto periodico
         Periodico__c periodico = new Periodico__c();
 
@@ -39,6 +39,9 @@ public with sharing class PeriodicoDAO {
 
         if (nome != '')
             periodico.Nome__c = nome;
+        
+        if (categoria != '')
+            periodico.Categoria__c = categoria;
 
         try {
             upsert periodico;
