@@ -65,9 +65,9 @@ public with sharing class AssinaturaDAO {
         ];
     }
 
-    public Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId) {
+    public Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId, String tipoAssinatura) {
 
-        Assinatura__c assinatura = new Assinatura__c();
+        Assinatura__c assinatura = new Assinatura__c(TipoAssinatura__c = tipoAssinatura);
 
         // Verifico se o parametro assinaturaId não está vindo como nulo (vazio)
         if (assinaturaId != null)

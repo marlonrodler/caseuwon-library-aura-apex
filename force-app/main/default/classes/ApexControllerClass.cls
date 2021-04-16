@@ -347,11 +347,11 @@ public with sharing class ApexControllerClass
     }
 
     @AuraEnabled
-    public static Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId) {
+    public static Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId, String tipoAssinatura) {
         try {
             AssinaturaDAO dao = new AssinaturaDAO();
 
-            return dao.atualizaInsereAssinatura(assinaturaId, leitorId, periodicoId);
+            return dao.atualizaInsereAssinatura(assinaturaId, leitorId, periodicoId, tipoAssinatura);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
