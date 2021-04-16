@@ -254,4 +254,51 @@ public with sharing class ApexControllerClass
         reserva.deletaReserva(reservaId);
     }
     // CONTROLLER RESERVAS
+
+    // CONTROLLER PERIODICO
+    // Deixo disponível para o Aura Component
+
+    @AuraEnabled
+    // Metodo estático que retorna uma lista de Periodicos
+    public static List<Periodico__c> buscaPeriodicos() 
+    {
+        // Instancio um objeto da classe PeriodicoDAO
+        PeriodicoDAO periodico = new PeriodicoDAO();
+        // Retorno o método criado na classe
+        return periodico.buscaPeriodicos();
+    }
+
+
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna um Reserva utilizando o parametro definido
+    public static Periodico__c buscaPeriodicoPorId(Id periodicoId) 
+    {
+        // Instancio um objeto da classe PeriodicoDAO
+        PeriodicoDAO periodico = new PeriodicoDAO();
+        // Retorno o método criado na classe
+        return periodico.buscaPeriodicoPorId(periodicoId);
+    }
+    
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que realiza o delete de um periodico através do parametro definido
+    public static void deletaPeriodico(Id periodicoId) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        PeriodicoDAO periodico = new PeriodicoDAO();
+        // Chamo o delete de periodico
+        periodico.deletaPeriodico(periodicoId);
+    }
+
+    @AuraEnabled
+    // Metodo estático que retorna um Periodico utilizando os parametros definidos
+    public static Periodico__c atualizaInserePeriodico(Id periodicoId, String nome, String categoria) 
+    {
+        // Instancio um objeto da classe PeriodicoDAO
+        PeriodicoDAO periodico = new PeriodicoDAO();
+        // Retorno o método criado na classe
+        return periodico.atualizaInserePeriodico(periodicoId, nome, categoria);
+    }
+
 }

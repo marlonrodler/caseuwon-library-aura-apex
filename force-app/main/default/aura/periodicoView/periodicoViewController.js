@@ -10,7 +10,8 @@
         // Seto as label para minha v.columns
         component.set('v.columns', [
             { label: 'Nome do periódico', fieldName: 'Nome__c', type: 'text' },
-            { label: 'Categoria do periódico', fieldName: 'Categoria__c', type: 'text' }
+            { label: 'Categoria do periódico', fieldName: 'Categoria__c', type: 'text' },
+            { type: 'action', typeAttributes: { rowActions: actions } }
         ]);
 
         // Realizo chamada na função searchPeriodicos()
@@ -169,12 +170,12 @@
 
         // Seto os parametros necessários para a chamada
         action.setParams({
-            PeriodicoId: component.get("v.id"),
+            periodicoId: component.get("v.id"),
             nome: component.get("v.nome"),
-            sobrenome: component.get("v.categoria")
+            categoria: component.get("v.selectedFilter")
         });
 
-        if ((component.get("v.nome") != '') && (component.get("v.categoria") != '')) {
+        if ((component.get("v.nome") != '') && (component.get("v.selectedFilter") != '')) {
             // Realizo um callback para validar e pegar a resposta do meu back-end
             action.setCallback(this, function (response) {
                 // Atribuo o estado da resposta na variavel state

@@ -19,8 +19,19 @@
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="nome" type="String" />
 
+    <!-- Criando um atributo que recebe uma Lista para escolher uma Categoria -->
+    <aura:attribute name="filters" type="List" default="[
+        { id: 1, label: 'Educação', value: 'Educação', selected: true },
+        { id: 2, label: 'Entretenimento', value: 'Entretenimento' },
+        { id: 3, label: 'Esporte', value: 'Esporte' },
+        { id: 4, label: 'Fofoca', value: 'Fofoca' },
+        { id: 5, label: 'Policial', value: 'Policial' },
+        { id: 6, label: 'Tecnologia', value: 'Tecnologia' }
+    ]" />
+
     <!-- Criando um atributo que recebe uma String -->
-    <aura:attribute name="categoria" type="String" />
+    <aura:attribute name="selectedFilter" type="String" />
+
 
     <!--Content-->
     <!-- Crio um card que recebe como título "Lista de periodicos" e um icone de Jornal -->
@@ -61,7 +72,7 @@
                         <span class="slds-assistive-text">Fechar</span>
                     </button>
 
-                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Detalhes</h2>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Detalhes do periódico</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <lightning:layout multipleRows="true">
@@ -70,12 +81,18 @@
                         <lightning:layoutItem padding="horizontal-small" size="6">
                             <lightning:input type="text" value="{!v.nome}" label="Nome do periódico:" maxlength="50" />
                         </lightning:layoutItem>
+                        
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:select aura:id="selectCategoria" name="{!v.categoria}"  label="Selecione o livro:" value="{!v.livro}">
-                                <aura:iteration var="cat" items="{!v.categorias}">
-                                    <option selected="" value="{!cat.Id}">{!cat.Nome__c}</option>
+                            
+                            <lightning:select name="filterId" label="Selecione a categoria:" aura:id="filterId"
+                                value="{!v.selectedFilter}">
+                                <!-- Defino os valores em items para percorrer -->
+                                <aura:iteration items="{!v.filters}" var="filter">
+                                    <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo filters -->
+                                    <option text="{!filter.label}" value="{!filter.value}" selected="{!filter.selected}" />
                                 </aura:iteration>
                             </lightning:select>
+
                         </lightning:layoutItem>
 
                     </lightning:layout>
@@ -85,8 +102,8 @@
                     <!-- Botão que possui onclick para fechar meu modal -->
                     <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
 
-                    <!-- Botão que possui onclick que recebe a função upsertLeitor() para atualizar ou inserir um leitor -->
-                    <button class="slds-button slds-button_brand" onclick="{!c.upsertLeitor}">Salvar</button>
+                    <!-- Botão que possui onclick que recebe a função upsertPeriodico() para atualizar ou inserir um Periodico -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertPeriodico}">Salvar</button>
                 </footer>
             </div>
         </section>
