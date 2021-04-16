@@ -69,7 +69,7 @@
 
         // Verifico se a quantidade de linhas selecionadas é maior que 1
         if (selectedRows.length > 1) {
-            // Pego na variável de ambiente o meu showToast que está no meu emprestimoViewHelper
+            // Pego na variável de ambiente o meu showToast que está no meu reservaViewHelper
             var toastEvent = $A.get("e.force:showToast");
             // Defino os paramentros de entrada para toastEvent
             toastEvent.setParams({
@@ -103,7 +103,7 @@
 
         // Verifico se a quantidade de linhas selecionadas é maior que 1
         if (selectedRows.length > 1) {
-            // Pego na variável de ambiente o meu showToast que está no meu emprestimoViewHelper
+            // Pego na variável de ambiente o meu showToast que está no meu reservaViewHelper
             var toastEvent = $A.get("e.force:showToast");
             // Defino os paramentros de entrada para toastEvent
             toastEvent.setParams({
@@ -147,7 +147,7 @@
             cmp.set('v.selectedRows', []);
             cmp.set('v.keyword', '');
         } else {
-            // Pego na variável de ambiente o meu showToast que está no meu emprestimoViewHelper
+            // Pego na variável de ambiente o meu showToast que está no meu reservaViewHelper
             var toastEvent = $A.get("e.force:showToast");
             // Defino os paramentros de entrada para toastEvent
             toastEvent.setParams({
@@ -161,7 +161,7 @@
         }
     },
 
-    // Função para buscar todos os emprestimos
+    // Função para buscar todos os reservas
     searchReservas: function (component, event, helper) {
         // Realizo a chamada da função buscaReservasPorKeyword na minha ApexControllerClass
         let action = component.get('c.buscaReservasPorKeyword');
@@ -197,8 +197,8 @@
                     row.LeitorNome = row.Leitor__r.Nome__c;
                     row.LeitorSobrenome = row.Leitor__r.Sobrenome__c;
                 }
-                // Atribuo a lista de rows na minha lista de emprestimos do meu componente emprestimoView
-                component.set('v.emprestimos', rows);
+                // Atribuo a lista de rows na minha lista de reservas do meu componente reservaView
+                component.set('v.reservas', rows);
             }
         });
 
@@ -229,7 +229,7 @@
                 // Defino uma variável para armazenar a resposta da chamada
                 let returnValue = response.getReturnValue();
 
-                // Atribuo a lista da resposta na minha lista de livros do meu componente emprestimoView
+                // Atribuo a lista da resposta na minha lista de livros do meu componente reservaView
                 component.set('v.livros', returnValue);
             }
         });
@@ -262,7 +262,7 @@
             if (state == 'SUCCESS') {
                 console.log(returnValue);
 
-                // Atribuo a lista da resposta na minha lista de leitores do meu componente emprestimoView
+                // Atribuo a lista da resposta na minha lista de leitores do meu componente reservaView
                 component.set('v.leitores', returnValue);
             }
         });
@@ -291,7 +291,7 @@
                 let actionSearch = component.get('c.buscaReservaPorId');
 
                 // Defino os paramentros de entrada para essa chamada
-                actionSearch.setParams({ emprestimoId: row.Id });
+                actionSearch.setParams({ reservaId: row.Id });
 
                 // Realizo o callBack para validar a chamada e pegar a resposta
                 actionSearch.setCallback(this, function (response) {
@@ -311,7 +311,7 @@
                         component.set('v.autor', returnValue.Livro__r.Autor__c);
                         component.set('v.nome', returnValue.Leitor__r.Nome__c);
                         component.set('v.sobrenome', returnValue.Leitor__r.Sobrenome__c);
-                        component.set('v.status', returnValue.StatusReserva);
+                        component.set('v.status', returnValue.StatusReserva__c);
                         component.set('v.dataReserva', returnValue.DataReserva__c);
                     }
                 });
@@ -329,9 +329,9 @@
                 let actionDelete = component.get('c.deletaReserva');
 
                 // Defino os paramentros de entrada para essa chamada
-                actionDelete.setParams({ emprestimoId: row.Id });
+                actionDelete.setParams({ reservaId: row.Id });
 
-                // Pego na variável de ambiente o meu showToast que está no meu emprestimoViewHelper
+                // Pego na variável de ambiente o meu showToast que está no meu reservaViewHelper
                 var toastEvent = $A.get("e.force:showToast");
 
                 // Realizo o callBack para validar a chamada e pegar a resposta
@@ -393,7 +393,7 @@
         }
     },
 
-    // Função para atualizar ou inserir um emprestimo
+    // Função para atualizar ou inserir um reserva
     upsertReserva: function (component, event, helper) {
 
         // Realizo a chamada do atualizaInsereReserva da minha ApexControllerClass
@@ -406,7 +406,7 @@
         // Verifico se leitorId possui um valor
         if (component.get('v.leitorId') == null) {
 
-            // Pego na variável de ambiente o meu showToast que está no meu emprestimoViewHelper
+            // Pego na variável de ambiente o meu showToast que está no meu reservaViewHelper
             var toastEvent = $A.get("e.force:showToast");
             // Defino os paramentros de entrada para toastEvent
             toastEvent.setParams({
@@ -421,7 +421,7 @@
 
         // Seto os parametros necessários para a chamada
         action.setParams({
-            emprestimoId: component.get("v.id"),
+            reservaId: component.get("v.id"),
             livroId: component.get("v.livroId"),
             leitorId: component.get("v.leitorId"),
             status: component.get("v.status")
@@ -453,7 +453,7 @@
                     // Defino os paramentros de entrada no meu toastEvent
                     toastEvent.setParams({
                         "title": "Successo!",
-                        "message": "Empréstimo criado com sucesso.",
+                        "message": "Reserva criada com sucesso.",
                         "type": "success"
                     });
 
@@ -463,7 +463,7 @@
                     // Defino os paramentros de entrada no meu toastEvent
                     toastEvent.setParams({
                         "title": "Successo!",
-                        "message": "Empréstimo atualizado com sucesso.",
+                        "message": "Reserva atualizada com sucesso.",
                         "type": "success"
                     });
                 }
@@ -510,7 +510,7 @@
 
     // Função para abrir modal com as variáveis limpas
     showModal: function (component, event, helper) {
-        // Limpo minhas variáveis do emprestimoView
+        // Limpo minhas variáveis do reservaView
         component.set('v.id', null);
         component.set('v.leitorId', null);
         component.set('v.livroId', null);
@@ -522,13 +522,13 @@
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
 
-        // Seto para minha variável modal do componente emprestimoView como verdadeira, abrindo assim meu modal
+        // Seto para minha variável modal do componente reservaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
     },
 
     // Função para voltar modal de buscar livro com as variáveis limpas
     backModal: function (component, event, helper) {
-        // Limpo minhas variáveis do emprestimoView
+        // Limpo minhas variáveis do reservaView
         component.set('v.id', null);
         component.set('v.leitorId', null);
         component.set('v.livroId', null);
@@ -540,10 +540,10 @@
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
 
-        // Seto para minha variável modal do componente emprestimoView como verdadeira, abrindo assim meu modal
+        // Seto para minha variável modal do componente reservaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
 
-        // Seto para minha variável detailModal do componente emprestimoView como falsa
+        // Seto para minha variável detailModal do componente reservaView como falsa
         component.set('v.leitorModal', false);
 
 
@@ -569,7 +569,7 @@
 
     // Função para fechar detailModal
     closeModal: function (component, event, helper) {
-        // Limpo minhas variáveis do emprestimoView
+        // Limpo minhas variáveis do reservaView
         component.set('v.id', null);
         component.set('v.leitorId', null);
         component.set('v.livroId', null);
@@ -581,7 +581,7 @@
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
 
-        // Seto para minha variável detailModal do componente emprestimoView como falsa
+        // Seto para minha variável detailModal do componente reservaView como falsa
         component.set('v.modal', false);
         component.set('v.leitorModal', false);
         component.set('v.detailModal', false);
