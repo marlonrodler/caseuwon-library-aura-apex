@@ -35,7 +35,7 @@ public with sharing class AssinaturaDAO {
         ];
     }
 
-    public List<Assinatura__c> buscaReservasPorKeyword(String keyword, String status) 
+    public List<Assinatura__c> buscaAssinaturasPorKeyword(String keyword, String status) 
     {
 
         // Concateno meu keyword com '%', ficando '%keyword%'

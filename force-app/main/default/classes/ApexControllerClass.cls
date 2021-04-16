@@ -311,4 +311,60 @@ public with sharing class ApexControllerClass
         return leitor.buscaPeriodicosPorNome(nome);
     }
 
+
+    @AuraEnabled
+    public static List<Assinatura__c> buscaAssinaturas() {
+        try {
+            AssinaturaDAO dao = new AssinaturaDAO();
+
+            return dao.buscaAssinaturas();
+
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Assinatura__c buscaAssinaturaPorId(Id assinaturaId) {
+        try {
+            AssinaturaDAO dao = new AssinaturaDAO();
+
+            return dao.buscaAssinaturaPorId(assinaturaId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static List<Assinatura__c> buscaAssinaturasPorKeyword(String keyword, String status)  {
+        try {
+            AssinaturaDAO dao = new AssinaturaDAO();
+
+            return dao.buscaAssinaturasPorKeyword(keyword, status);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId) {
+        try {
+            AssinaturaDAO dao = new AssinaturaDAO();
+
+            return dao.atualizaInsereAssinatura(assinaturaId, leitorId, periodicoId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static void deletaAssinatura(Id assinaturaId) {
+        try {
+            AssinaturaDAO dao = new AssinaturaDAO();
+
+            return dao.deletaAssinatura(assinaturaId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }
