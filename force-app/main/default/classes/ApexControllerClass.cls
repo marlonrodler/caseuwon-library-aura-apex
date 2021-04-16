@@ -186,4 +186,61 @@ public with sharing class ApexControllerClass
     }
     // CONTROLLER EMPRESTIMOS
 
+    
+    // CONTROLLER RESERVAS
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna uma lista de Reservas
+    public static List<Reserva__c> buscaReservas() 
+    {
+        // Instancio um objeto da classe LivroDAO
+        ReservaDAO reserva = new ReservaDAO();
+        // Retorno o método criado na classe
+        return reserva.buscaReservas();
+    }
+
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna uma lista de Reservas utilizando os parametros definidos
+    public static List<Reserva__c> buscaReservasPorKeyword(String keyword, String status)
+    {
+        // Instancio um objeto da classe LivroDAO
+        ReservaDAO reserva = new ReservaDAO();
+        // Retorno o método criado na classe
+        return reserva.buscaReservasPorKeyword(keyword, status);
+    }
+
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna um Reserva utilizando o parametro definido
+    public static Reserva__c buscaReservaPorId(Id reservaId) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        ReservaDAO reserva = new ReservaDAO();
+        // Retorno o método criado na classe
+        return reserva.buscaReservaPorId(reservaId);
+    }
+    
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna um Reserva utilizando os parametros definidos
+    public static Reserva__c atualizaInsereReserva(Id reservaId, Id livroId, Id leitorId, String status) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        ReservaDAO reserva = new ReservaDAO();
+        // Retorno o método criado na classe
+        return reserva.atualizaInsereReserva(reservaId, livroId, leitorId, status);
+    }
+
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que realiza o delete de um reserva através do parametro definido
+    public static void deletaReserva(Id reservaId) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        ReservaDAO reserva = new ReservaDAO();
+        // Chamo o delete de reserva
+        reserva.deletaReserva(reservaId);
+    }
+    // CONTROLLER RESERVAS
 }
