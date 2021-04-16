@@ -257,7 +257,6 @@ public with sharing class ApexControllerClass
 
     // CONTROLLER PERIODICO
     // Deixo disponível para o Aura Component
-
     @AuraEnabled
     // Metodo estático que retorna uma lista de Periodicos
     public static List<Periodico__c> buscaPeriodicos() 
