@@ -9,7 +9,10 @@ public with sharing class AssinaturaDAO {
             SELECT 
                 id, // Buscar relacionamentos
                 Leitor__c,
+                Leitor__r.Nome__c,
+                Leitor__r.Sobrenome__c,
                 Periodico__c,
+                Periodico__r.Nome__c,
                 TipoAssinatura__c,
                 DataAssinatura__c
             FROM 
