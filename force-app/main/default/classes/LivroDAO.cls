@@ -79,6 +79,27 @@ public with sharing class LivroDAO
                 QuantidadeDisponivel__c > 0
         ];
     }
+    
+    // Defino método para retornar uma lista de livro pelo seu Titulo através do parametro titulo
+    public List<Livro__c> buscaLivrosPorTituloReserva(String titulo) 
+    {
+        titulo = '%'+titulo+'%';
+        return [
+            SELECT 
+                id, 
+                Codigo__c,
+                Titulo__c,
+                Autor__c,
+                Quantidade__c,
+                QuantidadeDisponivel__c,
+                QuantidadeEmprestada__c
+            FROM 
+                Livro__c
+            WHERE 
+                Titulo__c LIKE :titulo AND
+                QuantidadeDisponivel__c = 0
+        ];
+    }
 
     // Defino método para atualizar ou inserir um Livro
     public Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade) 

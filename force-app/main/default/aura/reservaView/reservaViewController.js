@@ -208,8 +208,8 @@
 
     // Função para buscar todos os livros
     searchLivros: function (component, event, helper) {
-        // Realizo a chamada da função buscaLivrosPorTitulo na minha ApexControllerClass
-        let action = component.get('c.buscaLivrosPorTitulo');
+        // Realizo a chamada da função buscaLivrosPorTituloReserva na minha ApexControllerClass
+        let action = component.get('c.buscaLivrosPorTituloReserva');
 
         // Atribuo para keyword o valor do v.keyword
         let keyword = component.get('v.keyword') || '';
