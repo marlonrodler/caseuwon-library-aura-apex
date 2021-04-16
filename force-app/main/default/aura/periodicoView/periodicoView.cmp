@@ -21,7 +21,7 @@
 
     <!-- Criando um atributo que recebe uma Lista para escolher uma Categoria -->
     <aura:attribute name="filters" type="List" default="[
-        { id: 1, label: 'Educação', value: 'Educação', selected: true },
+        { id: 1, label: 'Educação', value: 'Educacao', selected: true },
         { id: 2, label: 'Entretenimento', value: 'Entretenimento' },
         { id: 3, label: 'Esporte', value: 'Esporte' },
         { id: 4, label: 'Fofoca', value: 'Fofoca' },

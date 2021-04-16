@@ -66,7 +66,7 @@
                 let actionSearch = component.get('c.buscaPeriodicoPorId');
 
                 // Defino os paramentros de entrada para essa chamada
-                actionSearch.setParams({ PeriodicoId: row.Id });
+                actionSearch.setParams({ periodicoId: row.Id });
 
                 // Realizo o callBack para validar a chamada e pegar a resposta
                 actionSearch.setCallback(this, function (response) {
@@ -81,7 +81,7 @@
                         // Atribuo todos os valores da resposta para as variáves encontradas no meu componente PeriodicoView
                         component.set('v.id', returnValue.Id);
                         component.set('v.nome', returnValue.Nome__c);
-                        component.set('v.categoria', returnValue.Categoria__c);
+                        component.set('v.selectedFilter', returnValue.Categoria__c);
                     }
                 });
 
