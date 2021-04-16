@@ -35,7 +35,7 @@ public with sharing class ReservaDAO
         // Valido qual o valor que está vindo em status
         if (status == '*') 
         {
-            status = '';
+            status = '%%';
         }
 
         return [
@@ -59,7 +59,7 @@ public with sharing class ReservaDAO
                 )
                 AND
                 (
-                    StatusReserva__c =: status 
+                    StatusReserva__c LIKE :status 
                 )
             ORDER BY Name DESC
         ];

@@ -32,18 +32,27 @@
         { id: 1, label: 'Todos', value: '*', selected: true },
         { id: 2, label: 'Pendentes', value: 'Pendente' },
         { id: 3, label: 'Emprestados', value: 'Emprestado' },
-        { id: 4, label: 'Cancelados', value: 'Cancelado' }
+        { id: 4, label: 'Cancelados', value: 'Cancelada' }
     ]" />
 
     <!-- Criando um atributo que recebe o valor da lista filters que foi selecionada -->
     <aura:attribute name="selectedFilter" type="String" />
+    
+    <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
+    <aura:attribute name="statusLists" type="List" default="[
+        { id: 1, label: 'Pendente', value: 'Pendente' },
+        { id: 2, label: 'Emprestado', value: 'Emprestado' },
+        { id: 3, label: 'Cancelado', value: 'Cancelada' }
+    ]" />
+
+    <!-- Criando um atributo que recebe o valor da lista statusLists que foi selecionada -->
+    <aura:attribute name="status" type="String" />
 
     <!-- Criando os atributos para receber os dados de entrada do usuário ou os dados que estão vindo do meu back-end -->
     <aura:attribute name="titulo" type="String" />
     <aura:attribute name="autor" type="String" />
     <aura:attribute name="nome" type="String" />
     <aura:attribute name="sobrenome" type="String" />
-    <aura:attribute name="status" type="String" />
     <aura:attribute name="dataReserva" type="Date" />
 
     <!--Content-->
@@ -65,7 +74,7 @@
                     Defino um select que recebe o valor que for selecionado para a minha selectedFilter
                     E onchange, onde toda vez que trocar de uma valor, disparo essa função
                 -->
-                <lightning:select name="filterId" label="Selecione status de status:" aura:id="filterId"
+                <lightning:select name="filterId" label="Selecione status da reserva:" aura:id="filterId"
                     value="{!v.selectedFilter}" onchange="{! c.searchReservas }">
                     <!-- Defino os valores em items para percorrer -->
                     <aura:iteration items="{!v.filters}" var="filter">
@@ -96,7 +105,7 @@
                     Possui disparo de ação por checkbox handleSelectedReservas
                 -->
                 <lightning:datatable columns="{! v.columns }" data="{! v.reservas }" keyField="id"
-                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true"  />
+                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true" hideCheckboxColumn="false" />
             </lightning:layoutItem>
         </lightning:layout>
     </lightning:card>
@@ -261,8 +270,15 @@
                                 disabled="true" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="checkbox" label="Status da Reserva" name="status" checked="{!v.status}"
-                                value="{!v.status}" />
+                            <lightning:select name="statusListId" label="Selecione status da reserva:" aura:id="statusListId"
+                                value="{!v.status}">
+                                <!-- Defino os valores em items para percorrer -->
+                                <aura:iteration items="{!v.statusLists}" var="statusList">
+                                    <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo statusLists -->
+                                    <option text="{!statusList.label}" value="{!statusList.value}"
+                                        selected="{!statusList.selected}" />
+                                </aura:iteration>
+                            </lightning:select>
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
                             <lightning:input type="date" name="input7" label="Data do empréstimo" disabled="true"
