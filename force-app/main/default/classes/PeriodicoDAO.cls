@@ -29,6 +29,21 @@ public with sharing class PeriodicoDAO {
         ];
     }
 
+    // Defino método para retornar uma lista periodico pelo seu Nome através do parametro nome
+    public List<Periodico__c> buscaPeriodicosPorNome(String nome) 
+    {
+        nome = '%'+nome+'%';
+        return [
+            SELECT 
+                id, 
+                Nome__c,
+                Categoria__c
+            FROM 
+                Periodico__c
+            WHERE Nome__c = :nome
+        ];
+    }
+
     public Periodico__c atualizaInserePeriodico(Id periodicoId, String nome, String categoria) {
         // Instancio meu objeto periodico
         Periodico__c periodico = new Periodico__c();

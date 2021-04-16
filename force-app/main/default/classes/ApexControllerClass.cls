@@ -300,4 +300,15 @@ public with sharing class ApexControllerClass
         return periodico.atualizaInserePeriodico(periodicoId, nome, categoria);
     }
 
+    // Deixo disponível para o Aura Component
+    @AuraEnabled
+    // Metodo estático que retorna um único nome, através do parametro nome
+    public static List<Periodico__c> buscaPeriodicosPorNome(String nome) 
+    {
+        // Instancio um objeto da classe PeriodicoDAO
+        PeriodicoDAO leitor = new PeriodicoDAO();
+        // Retorno o método criado na classe
+        return leitor.buscaPeriodicosPorNome(nome);
+    }
+
 }
