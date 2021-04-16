@@ -10,16 +10,17 @@
 
         // Seto as label para minha v.columns
         component.set('v.columns', [
-            { label: 'Nome do leitor', fieldName: 'NomeLeitor__c', type: 'text' },
-            { label: 'Título', fieldName: 'NomePeriodico__c', type: 'text' },
-            { label: 'Tipo', fieldName: 'TipoAssinatura__c', type: 'text' },
-            { label: 'Data de Assinatura', fieldName: 'DataAssinatura__c', type: 'date' },
+            { label: 'Nome do periódico', fieldName: 'PeriodicoNome', type: 'text' },
+            { label: 'Nome do leitor', fieldName: 'LeitorNome', type: 'text' },
+            { label: 'Sobrenome do leitor', fieldName: 'LeitorSobrenome', type: 'text' },
+            { label: 'Tipo de assinatura', fieldName: 'TipoAssinatura__c', type: 'text' },
+            { label: 'Data da assinatura', fieldName: 'DataAssinatura__c', type: 'date' },
             { type: 'action', typeAttributes: { rowActions: actions } }
         ]);
 
         // Seto as label para minha v.columns
         component.set('v.periodicoColumns', [
-            { label: 'Título do periodico', fieldName: 'Nome__c', type: 'text' }
+            { label: 'Nome do periódico', fieldName: 'Nome__c', type: 'text' },
         ]);
 
         // Seto as label para minha v.columns
@@ -28,12 +29,23 @@
             { label: 'Sobrenome do leitor', fieldName: 'Sobrenome__c', type: 'text' },
         ]);
 
+        // Realizo chamada na função searchPeriodicos()
         var searchPeriodicos = component.get('c.searchPeriodicos');
+
+        // Realizo chamada na função searchLeitores()
         var searchLeitores = component.get('c.searchLeitores');
+
+        // Realizo chamada na função searchAssinaturas()
         var searchAssinaturas = component.get('c.searchAssinaturas');
 
+
+        // Coloco minha chamada na fila
         $A.enqueueAction(searchLeitores);
+
+        // Coloco minha chamada na fila
         $A.enqueueAction(searchPeriodicos);
+
+        // Coloco minha chamada na fila
         $A.enqueueAction(searchAssinaturas);
     },
 
@@ -105,27 +117,6 @@
         }
     },
 
-    // Função disparada toda vez que clico no checkbox padrão do meu datatable
-    handleSelectedAssinaturas: function (cmp, evt) {
-        // Seto para a variavel selectedRows o que tem no meu parametro selectedRows do datatable
-        var selectedRows = evt.getParam('selectedRows');
-
-        // Array criado para receber todos os ids das linhas selecionadas
-        var setRows = [];
-
-        // Verifico se tem alguma linha selecionada
-        if (selectedRows.length > 0) {
-            // Percorro pelas linhas atribuindo o ID delas para meu setRows
-            for (var i = 0; i < selectedRows.length; i++) {
-                // Atribuo a linha com seu respectivo Id
-                setRows.push(selectedRows[i].Id);
-            }
-        }
-        // Seto todos os Ids selecionados para a variavel assinaturaIds
-        cmp.set('v.assinaturaIds', setRows);
-
-    },
-
     // Função para disparar o searchEmpretimo com uma keyword
     handleClick: function (cmp, evt) {
         // Pego valor do meu enter-search (input definido na tela)
@@ -170,8 +161,17 @@
     // Função para buscar todos os assinaturas
     searchAssinaturas: function (component, event, helper) {
         // Realizo a chamada da função buscaAssinaturasPorKeyword na minha ApexControllerClass
+        let action = component.get('c.buscaAssinaturasPorKeyword');
 
-        let action = component.get('c.buscaAssinaturas');
+        // Defino keyword e status para receber v.keyword e v.selectedFilter
+        let keyword = component.get('v.keyword') || '';
+        let status = component.get('v.selectedFilter') || '*';
+
+        // Seto os parametros necessários para a chamada
+        action.setParams({
+            keyword: keyword,
+            status: status
+        });
 
         // Realizo o callBack para validar a chamada e pegar a resposta
         action.setCallback(this, function (response) {
@@ -181,8 +181,18 @@
             // If para verificar se o estado retorna como SUCESSO
             if (state == 'SUCCESS') {
                 // Atribuo para rows os valores do retorno
-                var rows = helper.parseReturnValue(response.getReturnValue());
-                console.log(rows);
+                var rows = response.getReturnValue();
+
+                // Percorro os posições de row
+                for (var i = 0; i < rows.length; i++) {
+                    // Atribuo para row a posição de rows setadas no "i"
+                    var row = rows[i];
+
+                    // Subo uma casa os valores que são relacionais
+                    row.PeriodicoNome = row.Periodico__r.Nome__c;
+                    row.LeitorNome = row.Leitor__r.Nome__c;
+                    row.LeitorSobrenome = row.Leitor__r.Sobrenome__c;
+                }
                 // Atribuo a lista de rows na minha lista de assinaturas do meu componente assinaturaView
                 component.set('v.assinaturas', rows);
             }
@@ -194,15 +204,15 @@
 
     // Função para buscar todos os periodicos
     searchPeriodicos: function (component, event, helper) {
-        // Realizo a chamada da função buscaPeriodicosPorTitulo na minha ApexControllerClass
-        let action = component.get('c.buscaPeriodicosPorTitulo');
+        // Realizo a chamada da função buscaPeriodicosPorNome na minha ApexControllerClass
+        let action = component.get('c.buscaPeriodicosPorNome');
 
         // Atribuo para keyword o valor do v.keyword
         let keyword = component.get('v.keyword') || '';
 
         // Seto os parametros necessarios para o funcionamento do método (action)
         action.setParams({
-            titulo: keyword,
+            nome: keyword,
         });
         // Realizo o callBack para validar a chamada e pegar a resposta
         action.setCallback(this, function (response) {
@@ -215,6 +225,7 @@
                 // Defino uma variável para armazenar a resposta da chamada
                 let returnValue = response.getReturnValue();
 
+                console.log(returnValue);
                 // Atribuo a lista da resposta na minha lista de periodicos do meu componente assinaturaView
                 component.set('v.periodicos', returnValue);
             }
@@ -246,7 +257,6 @@
 
             // If para verificar se o estado retorna como SUCESSO
             if (state == 'SUCCESS') {
-                console.log(returnValue);
 
                 // Atribuo a lista da resposta na minha lista de leitores do meu componente assinaturaView
                 component.set('v.leitores', returnValue);
@@ -273,8 +283,8 @@
                 // Seto para minha variável detailModal do componente leitorView como verdadeira, abrindo assim meu detailModal
                 component.set('v.detailModal', true);
 
-                // Realizo a chamada da função buscaEmprestimoPorId na minha ApexControllerClass
-                let actionSearch = component.get('c.buscaEmprestimoPorId');
+                // Realizo a chamada da função buscaAssinaturaPorId na minha ApexControllerClass
+                let actionSearch = component.get('c.buscaAssinaturaPorId');
 
                 // Defino os paramentros de entrada para essa chamada
                 actionSearch.setParams({ assinaturaId: row.Id });
@@ -293,13 +303,11 @@
                         component.set('v.id', returnValue.Id);
                         component.set('v.periodicoId', returnValue.Periodico__c);
                         component.set('v.leitorId', returnValue.Leitor__c);
-                        component.set('v.titulo', returnValue.Periodico__r.Titulo__c);
-                        component.set('v.autor', returnValue.Periodico__r.Autor__c);
+                        component.set('v.nomePeriodico', returnValue.Periodico__r.Nome__c);
                         component.set('v.nome', returnValue.Leitor__r.Nome__c);
                         component.set('v.sobrenome', returnValue.Leitor__r.Sobrenome__c);
-                        component.set('v.devolvido', returnValue.Devolvido__c);
-                        component.set('v.dataEmprestimo', returnValue.DataEmprestimo__c);
-                        component.set('v.dataDevolucao', returnValue.DataDevolucao__c);
+                        component.set('v.tipoAssinatura', returnValue.TipoAssinatura__c);
+                        component.set('v.dataAssinatura', returnValue.DataAssinatura__c);
                     }
                 });
 
@@ -312,8 +320,8 @@
             // Caso a entrada for delete, então executo tudo dessa case
             case 'delete':
 
-                // Realizo a chamada da função deletaEmprestimo na minha ApexControllerClass
-                let actionDelete = component.get('c.deletaEmprestimo');
+                // Realizo a chamada da função deletaAssinatura na minha ApexControllerClass
+                let actionDelete = component.get('c.deletaAssinatura');
 
                 // Defino os paramentros de entrada para essa chamada
                 actionDelete.setParams({ assinaturaId: row.Id });
@@ -335,7 +343,7 @@
                         // Defino os paramentros de entrada para toastEvent
                         toastEvent.setParams({
                             "title": "Successo!",
-                            "message": "Emprestimo deletado com sucesso.",
+                            "message": "Assinatura deletado com sucesso.",
                             "type": "success"
                         });
 
@@ -380,89 +388,11 @@
         }
     },
 
-    // Função que realizar o update dos assinaturas devolvidos
-    updateAssinaturasDevolvidos: function (component, event, helper) {
-        // Realizo a chamada do devolveEmprestimo da minha ApexControllerClass
-        let action = component.get('c.devolveEmprestimo');
-
-        // Seto os parametros necessários para a chamada
-        action.setParams({
-            assinaturaIds: component.get('v.assinaturaIds')
-        });
-
-        // Realizo um callback para validar e pegar a resposta do meu back-end
-        action.setCallback(this, function (response) {
-            // Atribuo o estado da resposta na variavel state
-            let state = response.getState();
-
-            // Pego na variável de ambiente o meu showToast
-            var toastEvent = $A.get("e.force:showToast");
-
-            // Verifico de a resposta é SUCCESS
-            if (state == 'SUCCESS') {
-                // Realizo a chamada na função searchAssinaturas() para atualizar a lista de empréstimos
-                var searchAssinaturas = component.get('c.searchAssinaturas');
-                // Realizo a chamada na função searchPeriodicos() para atualizar a lista de periodicos
-                var searchPeriodicos = component.get('c.searchPeriodicos');
-                // Realizo a chamada na função searchLeitores() para atualizar a lista de leitores
-                var searchLeitores = component.get('c.searchLeitores');
-
-                // Defino os paramentros de entrada para toastEvent
-                toastEvent.setParams({
-                    "title": "Successo!",
-                    "message": "Empréstimo atualizado com sucesso.",
-                    "type": "success"
-                });
-
-                // Disparo o toastEvent
-                toastEvent.fire();
-
-                // Coloco na fila minha função searchLeitores()
-                $A.enqueueAction(searchLeitores);
-                // Coloco na fila minha função searchPeriodicos()
-                $A.enqueueAction(searchPeriodicos);
-                // Coloco na fila minha função searchAssinaturas()
-                $A.enqueueAction(searchAssinaturas);
-            }// Caso state retorne como diferente de SUCESSO
-            else {
-                // Pego o erro da minha resposta
-                let errors = response.getError();
-
-                // Atribuo uma mensagem de erro padrão
-                let message = 'Erro desconhecido';
-
-                // Valido se minha variável erro possui algum valor
-                if (errors && Array.isArray(errors) && errors.length > 0) {
-
-                    // Sobreescrevo minha mensagem padrão com o que está vindo de resposta
-                    message = errors[0].message;
-                }
-
-                // Defino os paramentros de entrada para toastEvent
-                toastEvent.setParams({
-                    "title": "Erro!",
-                    "message": message,
-                    "type": "error"
-                });
-
-                // Disparo meu toastEvent
-                toastEvent.fire();
-            }
-        });
-
-        // Limpo minha selectedRows e meu empretimoIds
-        component.set('v.selectedRows', []);
-        component.set('v.assinaturaIds', []);
-
-        // Coloco na fila minha função action()
-        $A.enqueueAction(action);
-    },
-
     // Função para atualizar ou inserir um assinatura
-    upsertEmprestimo: function (component, event, helper) {
+    upsertAssinatura: function (component, event, helper) {
 
-        // Realizo a chamada do atualizaInsereEmprestimo da minha ApexControllerClass
-        let action = component.get('c.atualizaInsereEmprestimo');
+        // Realizo a chamada do atualizaInsereAssinatura da minha ApexControllerClass
+        let action = component.get('c.atualizaInsereAssinatura');
 
 
         // Pego na variável de ambiente o meu showToast
@@ -484,12 +414,14 @@
             toastEvent.fire();
         }
 
+        let tipoAssinatura = component.get('v.tipoAssinatura') || 'Mensal';
+        
         // Seto os parametros necessários para a chamada
         action.setParams({
             assinaturaId: component.get("v.id"),
             periodicoId: component.get("v.periodicoId"),
             leitorId: component.get("v.leitorId"),
-            devolvido: component.get("v.devolvido")
+            tipoAssinatura: tipoAssinatura
         });
 
         // Realizo um callback para validar e pegar a resposta do meu back-end
@@ -518,7 +450,7 @@
                     // Defino os paramentros de entrada no meu toastEvent
                     toastEvent.setParams({
                         "title": "Successo!",
-                        "message": "Empréstimo criado com sucesso.",
+                        "message": "Assinatura criada com sucesso.",
                         "type": "success"
                     });
 
@@ -528,7 +460,7 @@
                     // Defino os paramentros de entrada no meu toastEvent
                     toastEvent.setParams({
                         "title": "Successo!",
-                        "message": "Empréstimo atualizado com sucesso.",
+                        "message": "Assinatura atualizada com sucesso.",
                         "type": "success"
                     });
                 }
@@ -581,14 +513,11 @@
         component.set('v.periodicoId', null);
         component.set('v.nome', '');
         component.set('v.sobrenome', '');
-        component.set('v.titulo', '');
-        component.set('v.autor', '');
-        component.set('v.devolvido', null);
-        component.set('v.dataEmprestimo', null);
-        component.set('v.dataDevolucao', null);
+        component.set('v.nomePeriodico', '');
+        component.set('v.tipoAssinatura', '');
+        component.set('v.dataAssinatura', null);
         component.set('v.keyword', '');
         component.set('v.selectedRows', []);
-        component.set('v.assinaturaIds', []);
 
         // Seto para minha variável modal do componente assinaturaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -602,14 +531,11 @@
         component.set('v.periodicoId', null);
         component.set('v.nome', '');
         component.set('v.sobrenome', '');
-        component.set('v.titulo', '');
-        component.set('v.autor', '');
-        component.set('v.devolvido', null);
-        component.set('v.dataEmprestimo', null);
-        component.set('v.dataDevolucao', null);
+        component.set('v.nomePeriodico', '');
+        component.set('v.tipoAssinatura', '');
+        component.set('v.dataAssinatura', null);
         component.set('v.keyword', '');
         component.set('v.selectedRows', []);
-        component.set('v.assinaturaIds', []);
 
         // Seto para minha variável modal do componente assinaturaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -646,14 +572,11 @@
         component.set('v.periodicoId', null);
         component.set('v.nome', '');
         component.set('v.sobrenome', '');
-        component.set('v.titulo', '');
-        component.set('v.autor', '');
-        component.set('v.devolvido', null);
-        component.set('v.dataEmprestimo', null);
-        component.set('v.dataDevolucao', null);
+        component.set('v.nomePeriodico', '');
+        component.set('v.tipoAssinatura', '');
+        component.set('v.dataAssinatura', null);
         component.set('v.keyword', '');
         component.set('v.selectedRows', []);
-        component.set('v.assinaturaIds', []);
 
         // Seto para minha variável detailModal do componente assinaturaView como falsa
         component.set('v.modal', false);
@@ -679,4 +602,5 @@
         // Coloco minha chamada na fila
         $A.enqueueAction(searchAssinaturas);
     }
+
 })

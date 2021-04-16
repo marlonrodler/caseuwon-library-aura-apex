@@ -521,6 +521,7 @@
         component.set('v.status', '');
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
+        component.set('v.selectedRows', []);
 
         // Seto para minha variável modal do componente reservaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -539,6 +540,7 @@
         component.set('v.status', '');
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
+        component.set('v.selectedRows', []);
 
         // Seto para minha variável modal do componente reservaView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -580,6 +582,7 @@
         component.set('v.status', '');
         component.set('v.dataReserva', null);
         component.set('v.keyword', '');
+        component.set('v.selectedRows', []);
 
         // Seto para minha variável detailModal do componente reservaView como falsa
         component.set('v.modal', false);

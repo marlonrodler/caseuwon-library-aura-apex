@@ -40,7 +40,7 @@ public with sharing class PeriodicoDAO {
                 Categoria__c
             FROM 
                 Periodico__c
-            WHERE Nome__c = :nome
+            WHERE Nome__c LIKE :nome
         ];
     }
 
