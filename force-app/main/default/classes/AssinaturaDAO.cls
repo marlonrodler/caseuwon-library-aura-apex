@@ -11,10 +11,9 @@ public with sharing class AssinaturaDAO {
                 Leitor__c,
                 Leitor__r.Nome__c,
                 Leitor__r.Sobrenome__c,
-                Periodico__c,
                 Periodico__r.Nome__c,
-                TipoAssinatura__c,
-                DataAssinatura__c
+                DataAssinatura__c,
+                TipoAssinatura__c
             FROM 
                 Assinatura__c
             ORDER BY Name DESC
@@ -28,11 +27,41 @@ public with sharing class AssinaturaDAO {
                 id, // Buscar relacionamentos
                 Leitor__c,
                 Periodico__c,
-                TipoAssinatura__c,
-                DataAssinatura__c
+                DataAssinatura__c,
+                TipoAssinatura__c
             FROM
                 Assinatura__c
             WHERE id = :assinaturaId
+        ];
+    }
+
+    public List<Assinatura__c> buscaReservasPorKeyword(String keyword, String status) 
+    {
+
+        // Concateno meu keyword com '%', ficando '%keyword%'
+        keyword = '%'+keyword+'%';
+
+        // Valido qual o valor que está vindo em status
+        if (status == '*') 
+        {
+            status = '%%';
+        }
+
+        return [
+            SELECT 
+                id,
+                Periodico__c,
+                Leitor__c,
+                Periodico__r.Nome__c,
+                Leitor__r.Nome__c,
+                Leitor__r.Sobrenome__c,
+                DataAssinatura__c,
+                TipoAssinatura__c
+            FROM 
+                Assinatura__c
+            WHERE 
+                Periodico__r.Nome__c LIKE :keyword
+            ORDER BY Name DESC
         ];
     }
 
