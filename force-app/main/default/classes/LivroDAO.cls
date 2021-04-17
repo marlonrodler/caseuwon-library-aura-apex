@@ -96,7 +96,7 @@ public with sharing class LivroDAO
         return [
             SELECT
                 id,
-                Name__c,
+                Name,
                 Titulo__c,
                 Autor__c,
                 Quantidade__c,
@@ -107,10 +107,10 @@ public with sharing class LivroDAO
                 Livro__c
             WHERE
                 (
-                    Name__c LIKE :keyword OR
+                    Name LIKE :keyword OR
                     Titulo__c LIKE :keyword OR
                     Autor__c LIKE :keyword OR
-                    Categoria__c :keyword
+                    Categoria__c LIKE :keyword
                 )
             ORDER BY Name DESC
         ];
