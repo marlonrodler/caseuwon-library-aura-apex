@@ -84,7 +84,7 @@ public with sharing class LivroDAO
         ];
     }
 
-    public List<Livro__c> buscaLivrosPorKeyword(String keyword, String status)
+    public List<Livro__c> buscaLivrosPorKeyword(String keyword)
     {
         // Defino dois filtros para validar com o campo Devolver__c
         Boolean filter = true;
@@ -92,18 +92,6 @@ public with sharing class LivroDAO
 
         // Concateno meu keyword com '%', ficando '%keyword%'
         keyword = '%'+keyword+'%';
-
-        // Valido qual o valor que está vindo em status
-        if (status == 'T')
-        {
-            // Atribuo true para auxFilter
-            auxFilter = true;
-        }
-        else if (status == 'F')
-        {
-            // Atribuo true para filter
-            filter = false;
-        }
 
         return [
             SELECT
@@ -122,7 +110,7 @@ public with sharing class LivroDAO
                     Name__c LIKE :keyword OR
                     Titulo__c LIKE :keyword OR
                     Autor__c LIKE :keyword OR
-                    Categoria__c
+                    Categoria__c :keyword
                 )
             ORDER BY Name DESC
         ];

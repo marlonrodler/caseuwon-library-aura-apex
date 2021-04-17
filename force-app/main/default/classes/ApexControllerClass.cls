@@ -84,11 +84,11 @@ public with sharing class ApexControllerClass
     }
     
     @AuraEnabled
-    public static buscaLivrosPorKeyword(String keyword, String status)  {
+    public static buscaLivrosPorKeyword(String keyword)  {
 
         LivroDAO livro = new LivroDAO();
 
-        return livro.buscaLivrosPorKeyword(keyword, status);
+        return livro.buscaLivrosPorKeyword(keyword);
     }
 
     // Deixo disponível para o Aura Component
