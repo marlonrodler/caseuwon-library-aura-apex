@@ -16,7 +16,8 @@ public with sharing class LivroDAO
                 Autor__c,
                 Quantidade__c,
                 QuantidadeDisponivel__c,
-                QuantidadeEmprestada__c
+                QuantidadeEmprestada__c,
+                Categoria__c
             FROM 
                 Livro__c
             ORDER BY Name DESC
@@ -34,7 +35,8 @@ public with sharing class LivroDAO
                 Autor__c,
                 Quantidade__c,
                 QuantidadeDisponivel__c,
-                QuantidadeEmprestada__c
+                QuantidadeEmprestada__c,
+                Categoria__c
             FROM 
                 Livro__c
             WHERE id =: livroId
@@ -52,7 +54,8 @@ public with sharing class LivroDAO
                 Autor__c,
                 Quantidade__c,
                 QuantidadeDisponivel__c,
-                QuantidadeEmprestada__c
+                QuantidadeEmprestada__c,
+                Categoria__c
             FROM 
                 Livro__c
             WHERE id =: codigo
@@ -71,7 +74,8 @@ public with sharing class LivroDAO
                 Autor__c,
                 Quantidade__c,
                 QuantidadeDisponivel__c,
-                QuantidadeEmprestada__c
+                QuantidadeEmprestada__c,
+                Categoria__c
             FROM 
                 Livro__c
             WHERE 
@@ -92,7 +96,8 @@ public with sharing class LivroDAO
                 Autor__c,
                 Quantidade__c,
                 QuantidadeDisponivel__c,
-                QuantidadeEmprestada__c
+                QuantidadeEmprestada__c,
+                Categoria__c
             FROM 
                 Livro__c
             WHERE 
@@ -102,7 +107,7 @@ public with sharing class LivroDAO
     }
 
     // Defino método para atualizar ou inserir um Livro
-    public Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade) 
+    public Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade, String categoria)
     {
         // Instancio meu objeto livro
         Livro__c livro = new Livro__c();
@@ -138,6 +143,11 @@ public with sharing class LivroDAO
         if (quantidade != null) 
         {
             livro.Quantidade__c = quantidade;
+        }
+
+        if (categoria != null)
+        {
+            livro.Categoria__c = categoria;
         }
 
         // Valido se QuantidadeDisponivel__c é menor que 0 (zero), caso seja, disparo um erro
