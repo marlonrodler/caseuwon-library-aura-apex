@@ -21,18 +21,28 @@
 
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="titulo" type="String" />
-    
+
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="autor" type="String" />
-    
+
     <!-- Criando um atributo que recebe um Inteiro -->
     <aura:attribute name="quantidade" type="Integer" />
 
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="quantidadeDisponivel" type="Integer" />
-    
+
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="quantidadeEmprestada" type="Integer" />
+
+    <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
+    <aura:attribute name="categoriaLists" type="List" default="[
+        { id: 1, label: 'Pendente', value: 'Pendente' },
+        { id: 2, label: 'Emprestado', value: 'Emprestado' },
+        { id: 3, label: 'Cancelado', value: 'Cancelada' }
+    ]" />
+
+    <!-- Criando um atributo que recebe o valor da lista categoriaLists que foi selecionada -->
+    <aura:attribute name="categoria" type="String" />
 
     <!--Content-->
     <!-- Crio um card que recebe como título "Lista de livros" e um icone de Pessoas -->
@@ -88,14 +98,27 @@
                         <lightning:layoutItem padding="horizontal-small" size="6">
                             <lightning:input type="text" value="{!v.codigo}" label="Código:" maxlength="50" />
                         </lightning:layoutItem>
-                        <lightning:layoutItem padding="horizontal-small" size="3">
-                            <lightning:input type="number" value="{!v.quantidade}" label="Quantidade:" />
-                        </lightning:layoutItem>
-                        <lightning:layoutItem padding="horizontal-small" size="3">
-                            <lightning:input type="number" value="{!v.quantidadeDisponivel}" label="Qtde Disponível:" disabled="true" />
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:select name="categoriaListId" label="Selecione categoria do livro:"
+                                aura:id="categoriaListId" value="{!v.categoria}">
+                                <!-- Defino os valores em items para percorrer -->
+                                <aura:iteration items="{!v.categoriaLists}" var="categoriaList">
+                                    <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo categoriaLists -->
+                                    <option text="{!categoriaList.label}" value="{!categoriaList.value}"
+                                        selected="{!categoriaList.selected}" />
+                                </aura:iteration>
+                            </lightning:select>
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="number" value="{!v.quantidadeEmprestada}" label="Quantidade Emprestada:" disabled="true" />
+                            <lightning:input type="number" value="{!v.quantidade}" label="Quantidade:" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="number" value="{!v.quantidadeDisponivel}" label="Qtde Disponível:"
+                                disabled="true" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="number" value="{!v.quantidadeEmprestada}"
+                                label="Quantidade Emprestada:" disabled="true" />
                         </lightning:layoutItem>
 
                     </lightning:layout>

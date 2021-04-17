@@ -255,6 +255,7 @@ public with sharing class ApexControllerClass
     }
     // CONTROLLER RESERVAS
 
+
     // CONTROLLER PERIODICO
     // Deixo disponível para o Aura Component
     @AuraEnabled
@@ -306,65 +307,66 @@ public with sharing class ApexControllerClass
     public static List<Periodico__c> buscaPeriodicosPorNome(String nome) 
     {
         // Instancio um objeto da classe PeriodicoDAO
-        PeriodicoDAO leitor = new PeriodicoDAO();
+        PeriodicoDAO periodico = new PeriodicoDAO();
         // Retorno o método criado na classe
-        return leitor.buscaPeriodicosPorNome(nome);
+        return periodico.buscaPeriodicosPorNome(nome);
     }
 
 
+       // CONTROLLER ASSINATURAS
+    // Deixo disponível para o Aura Component
     @AuraEnabled
-    public static List<Assinatura__c> buscaAssinaturas() {
-        try {
-            AssinaturaDAO dao = new AssinaturaDAO();
-
-            return dao.buscaAssinaturas();
-
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    // Metodo estático que retorna uma lista de Assinaturas
+    public static List<Assinatura__c> buscaAssinaturas() 
+    {
+        // Instancio um objeto da classe LivroDAO
+        AssinaturaDAO assinatura = new AssinaturaDAO();
+        // Retorno o método criado na classe
+        return assinatura.buscaAssinaturas();
     }
 
+    // Deixo disponível para o Aura Component
     @AuraEnabled
-    public static Assinatura__c buscaAssinaturaPorId(Id assinaturaId) {
-        try {
-            AssinaturaDAO dao = new AssinaturaDAO();
-
-            return dao.buscaAssinaturaPorId(assinaturaId);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    // Metodo estático que retorna uma lista de Assinaturas utilizando os parametros definidos
+    public static List<Assinatura__c> buscaAssinaturasPorKeyword(String keyword, String status)
+    {
+        // Instancio um objeto da classe LivroDAO
+        AssinaturaDAO assinatura = new AssinaturaDAO();
+        // Retorno o método criado na classe
+        return assinatura.buscaAssinaturasPorKeyword(keyword, status);
     }
 
+    // Deixo disponível para o Aura Component
     @AuraEnabled
-    public static List<Assinatura__c> buscaAssinaturasPorKeyword(String keyword, String status)  {
-        try {
-            AssinaturaDAO dao = new AssinaturaDAO();
-
-            return dao.buscaAssinaturasPorKeyword(keyword, status);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    // Metodo estático que retorna um Assinatura utilizando o parametro definido
+    public static Assinatura__c buscaAssinaturaPorId(Id assinaturaId) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        AssinaturaDAO assinatura = new AssinaturaDAO();
+        // Retorno o método criado na classe
+        return assinatura.buscaAssinaturaPorId(assinaturaId);
     }
-
+    
+    // Deixo disponível para o Aura Component
     @AuraEnabled
-    public static Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id leitorId, Id periodicoId, String tipoAssinatura) {
-        try {
-            AssinaturaDAO dao = new AssinaturaDAO();
-
-            return dao.atualizaInsereAssinatura(assinaturaId, leitorId, periodicoId, tipoAssinatura);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    // Metodo estático que retorna um Assinatura utilizando os parametros definidos
+    public static Assinatura__c atualizaInsereAssinatura(Id assinaturaId, Id periodicoId, Id leitorId, String tipoAssinatura) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        AssinaturaDAO assinatura = new AssinaturaDAO();
+        // Retorno o método criado na classe
+        return assinatura.atualizaInsereAssinatura(assinaturaId, periodicoId, leitorId, tipoAssinatura);
     }
 
+    // Deixo disponível para o Aura Component
     @AuraEnabled
-    public static void deletaAssinatura(Id assinaturaId) {
-        try {
-            AssinaturaDAO dao = new AssinaturaDAO();
-
-            return dao.deletaAssinatura(assinaturaId);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    // Metodo estático que realiza o delete de um assinatura através do parametro definido
+    public static void deletaAssinatura(Id assinaturaId) 
+    {
+        // Instancio um objeto da classe LivroDAO
+        AssinaturaDAO assinatura = new AssinaturaDAO();
+        // Chamo o delete de assinatura
+        assinatura.deletaAssinatura(assinaturaId);
     }
+    // CONTROLLER ASSINATURAS
 }

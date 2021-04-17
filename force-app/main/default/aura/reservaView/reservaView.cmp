@@ -27,6 +27,9 @@
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="keyword" type="String" default="" />
 
+    <!-- Criando um atributo que recebe uma lista das linha selecionadas para devolução -->
+    <aura:attribute name="selectedRows" type="List" />
+
     <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
     <aura:attribute name="filters" type="List" default="[
         { id: 1, label: 'Todos', value: '*', selected: true },
@@ -37,7 +40,7 @@
 
     <!-- Criando um atributo que recebe o valor da lista filters que foi selecionada -->
     <aura:attribute name="selectedFilter" type="String" />
-    
+
     <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
     <aura:attribute name="statusLists" type="List" default="[
         { id: 1, label: 'Pendente', value: 'Pendente' },
@@ -270,8 +273,8 @@
                                 disabled="true" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:select name="statusListId" label="Selecione status da reserva:" aura:id="statusListId"
-                                value="{!v.status}">
+                            <lightning:select name="statusListId" label="Selecione status da reserva:"
+                                aura:id="statusListId" value="{!v.status}">
                                 <!-- Defino os valores em items para percorrer -->
                                 <aura:iteration items="{!v.statusLists}" var="statusList">
                                     <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo statusLists -->

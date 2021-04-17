@@ -1,16 +1,17 @@
-<aura:component controller="AssinaturaController" implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+<aura:component controller="ApexControllerClass" implements="flexipage:availableForAllPageTypes,force:appHostable"
+    access="global">
     <!--Atributes-->
     <!-- Criando uma ação manipuladora que é executada inicialmente -->
     <aura:handler name="init" action="{!c.init}" value="{!this}" />
 
     <!-- Criando um atributo que recebe uma Lista -->
     <aura:attribute name="columns" type="List" />
-    <aura:attribute name="periodicosColumns" type="List" />
+    <aura:attribute name="periodicoColumns" type="List" />
     <aura:attribute name="leitorColumns" type="List" />
 
     <!-- Criando um atributo que recebe uma Lista -->
     <aura:attribute name="assinaturas" type="List" />
-    <aura:attribute name="periodicoss" type="List" />
+    <aura:attribute name="periodicos" type="List" />
     <aura:attribute name="leitores" type="List" />
 
     <!-- Criando um atributo que recebe uma Booleano, com valor pradão false -->
@@ -18,52 +19,71 @@
     <aura:attribute name="detailModal" type="Boolean" default="false" />
     <aura:attribute name="leitorModal" type="Boolean" default="false" />
 
-    <!-- Criando um atributo que recebe uma lista de ids de assinatura -->
-    <aura:attribute name="assinaturaIds" type="List" />
-
     <!-- Criando um atributo que recebe um Id -->
     <aura:attribute name="id" type="Id" />
     <aura:attribute name="leitorId" type="Id" />
-    <aura:attribute name="periodicosId" type="Id" />
+    <aura:attribute name="periodicoId" type="Id" />
 
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="keyword" type="String" default="" />
 
+    <!-- Criando um atributo que recebe uma lista das linha selecionadas para devolução -->
+    <aura:attribute name="selectedRows" type="List" />
+
     <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
     <aura:attribute name="filters" type="List" default="[
         { id: 1, label: 'Todos', value: '*', selected: true },
-        { id: 2, label: 'Devolvidos', value: 'T' },
-        { id: 3, label: 'Pendentes de devolução', value: 'F' }
+        { id: 2, label: 'Mensal', value: 'Mensal' },
+        { id: 3, label: 'Trimestral', value: 'Trimestral' },
+        { id: 4, label: 'Anual', value: 'Anual' }
     ]" />
 
     <!-- Criando um atributo que recebe o valor da lista filters que foi selecionada -->
     <aura:attribute name="selectedFilter" type="String" />
 
-    <!-- Criando um atributo que recebe uma lista das linha selecionadas para devolução -->
-    <aura:attribute name="selectedRows" type="List" />
+    <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
+    <aura:attribute name="tipos" type="List" default="[
+        { id: 1, label: 'Mensal', value: 'Mensal' },
+        { id: 2, label: 'Trimestral', value: 'Trimestral' },
+        { id: 3, label: 'Anual', value: 'Anual' }
+    ]" />
+
+    <!-- Criando um atributo que recebe o valor da lista filters que foi selecionada -->
+    <aura:attribute name="tipoAssinatura" type="String" />
 
     <!-- Criando os atributos para receber os dados de entrada do usuário ou os dados que estão vindo do meu back-end -->
     <aura:attribute name="nomePeriodico" type="String" />
     <aura:attribute name="nome" type="String" />
     <aura:attribute name="sobrenome" type="String" />
-    <aura:attribute name="devolvido" type="Boolean" default="false" />
-    <aura:attribute name="tipoAssinatura" type="String" />
     <aura:attribute name="dataAssinatura" type="Date" />
 
     <!--Content-->
     <!-- Crio um card que recebe como título "Lista de assinaturas" e um icone de Pessoas -->
-    <lightning:card variant="Narrow" title="Lista de Assinaturas" iconName="standard:partners">
+    <lightning:card variant="Narrow" title="Lista de periódicos" iconName="standard:partners">
         <aura:set attribute="actions">
-            <!-- Crio um botão que executa uma função ao ser clicado (updateAssinaturasDevolvidos do meu assinaturaViewController) -->
-            <lightning:button label="Devolver" onclick="{!c.updateAssinaturasDevolvidos}" name="novoLeitor" />
             <!-- Crio um botão que executa uma função ao ser clicado (showModal do meu assinaturaViewController) -->
-            <lightning:button label="Novo" onclick="{!c.showModal}" name="novoLeitor" />
+            <lightning:button label="Novo" onclick="{!c.showModal}" name="novoPeriodico" />
         </aura:set>
         <lightning:layout multipleRows="true" verticalAlign="end">
 
             <lightning:layoutItem padding="horizontal-small" size="6">
                 <lightning:input aura:id="enter-search" name="enter-search"
                     label="Insira a palavra chave e pressione 'Pesquisar'" type="search" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="4">
+                <!-- 
+                    Defino um select que recebe o valor que for selecionado para a minha selectedFilter
+                    E onchange, onde toda vez que trocar de uma valor, disparo essa função
+                -->
+                <lightning:select name="filterId" label="Selecione o tipo de assinatura:" aura:id="filterId"
+                    value="{!v.selectedFilter}" onchange="{! c.searchAssinaturas }">
+                    <!-- Defino os valores em items para percorrer -->
+                    <aura:iteration items="{!v.filters}" var="filter">
+                        <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo filters -->
+                        <option text="{!filter.label}" value="{!filter.value}" selected="{!filter.selected}" />
+                    </aura:iteration>
+                </lightning:select>
             </lightning:layoutItem>
 
             <lightning:layoutItem padding="horizontal-small" size="2">
@@ -87,8 +107,7 @@
                     Possui disparo de ação por checkbox handleSelectedAssinaturas
                 -->
                 <lightning:datatable columns="{! v.columns }" data="{! v.assinaturas }" keyField="id"
-                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
-                    onrowselection="{! c.handleSelectedAssinaturas }" />
+                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true" hideCheckboxColumn="false" />
             </lightning:layoutItem>
         </lightning:layout>
     </lightning:card>
@@ -107,7 +126,7 @@
                         <span class="slds-assistive-text">Fechar</span>
                     </button>
 
-                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar periodicoss Disponível</h2>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar Periodicos Disponível</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <lightning:layout multipleRows="true" verticalAlign="end">
@@ -115,29 +134,29 @@
                         <lightning:layoutItem size="8" padding="around-medium">
                             <!-- Input para atribuir um valor a keyword -->
                             <lightning:input type="text" value="{!v.keyword}"
-                                label="Informe o periodicos que deseja realizar o empréstimo" />
+                                label="Informe o periodico que deseja realizar o empréstimo" />
                         </lightning:layoutItem>
 
                         <lightning:layoutItem size="4" padding="around-medium">
-                            <!-- Botão para disparar função searchperiodicoss -->
+                            <!-- Botão para disparar função searchPeriodicos -->
                             <lightning:button label="Pesquisar" iconName="utility:search" iconPosition="left"
-                                onclick="{! c.searchperiodicoss }" />
+                                onclick="{! c.searchPeriodicos }" />
                         </lightning:layoutItem>
 
-                        <!-- Mostro o tamanho da minha lista periodicoss -->
+                        <!-- Mostro o tamanho da minha lista periodicos -->
                         <p class="slds-p-horizontal_small">
-                            Total de registros: {! v.periodicoss.length }
+                            Total de registros: {! v.periodicos.length }
                         </p>
 
                         <!-- 
                             Crio datatable para gerar minha tabela no modal
-                            Essa minha tabela recebe as periodicosColumns (colunas dos periodicoss) definidas na minha função init()
-                            Recebe os dados que são atribuídos ao meu atributo periodicoss na função searchperiodicoss()
-                            Possui disparo de ação por checkbox handleSelectedperiodicos
+                            Essa minha tabela recebe as periodicoColumns (colunas dos periodicos) definidas na minha função init()
+                            Recebe os dados que são atribuídos ao meu atributo periodicos na função searchPeriodicos()
+                            Possui disparo de ação por checkbox handleSelectedPeriodico
                         -->
-                        <lightning:datatable columns="{! v.periodicosColumns }" data="{! v.periodicoss }" keyField="id"
+                        <lightning:datatable columns="{! v.periodicoColumns }" data="{! v.periodicos }" keyField="id"
                             showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
-                            onrowselection="{! c.handleSelectedperiodicos }" />
+                            onrowselection="{! c.handleSelectedPeriodico }" />
 
                     </lightning:layout>
                 </div>
@@ -146,8 +165,8 @@
                     <!-- Botão que possui onclick para fechar meu modal -->
                     <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
 
-                    <!-- Botão que possui onclick que recebe a função validateperiodicosId() -->
-                    <button class="slds-button slds-button_brand" onclick="{!c.validateperiodicosId}">Próximo</button>
+                    <!-- Botão que possui onclick que recebe a função validatePeriodicoId() -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.validatePeriodicoId}">Próximo</button>
                 </footer>
             </div>
         </section>
@@ -169,11 +188,22 @@
                         <span class="slds-assistive-text">Fechar</span>
                     </button>
 
-                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar Leitores para o Empréstimo
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Buscar Leitores para Assinatura
                     </h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <lightning:layout multipleRows="true" verticalAlign="end">
+
+                        <lightning:layoutItem padding="horizontal-small" size="8">
+                            <lightning:select name="tipoId" label="Selecione o tipo de assinatura:" aura:id="tipoId"
+                                value="{!v.tipoAssinatura}">
+                                <!-- Defino os valores em items para percorrer -->
+                                <aura:iteration items="{!v.tipos}" var="tipo">
+                                    <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo tipos -->
+                                    <option text="{!tipo.label}" value="{!tipo.value}" selected="{!tipo.selected}" />
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
 
                         <lightning:layoutItem size="8" padding="around-medium">
                             <!-- Input para atribuir um valor a keyword -->
@@ -191,12 +221,11 @@
                         <p class="slds-p-horizontal_small">
                             Total de registros: {! v.leitores.length }
                         </p>
-
                         <!-- 
                             Crio datatable para gerar minha tabela no modal
                             Essa minha tabela recebe as leitorColumns (colunas dos leitores) definidas na minha função init()
-                            Recebe os dados que são atribuídos ao meu atributo periodicoss na função searchLeitores()
-                            Possui disparo de ação por checkbox handleSelectedLeitor
+                            Recebe os dados que são atribuídos ao meu atributo periodicos na função searchPeriodicoes()
+                            Possui disparo de ação por checkbox handleSelectedPeriodico
                         -->
                         <lightning:datatable columns="{! v.leitorColumns }" data="{! v.leitores }" keyField="id"
                             showRowNumberColumn="true" selectedRows="{! v.selectedRows }"
@@ -209,8 +238,8 @@
                     <!-- Botão que possui onclick para fechar meu modal -->
                     <button class="slds-button slds-button_neutral" onclick="{!c.backModal}">voltar</button>
 
-                    <!-- Botão que possui onclick que recebe a função upsertEmprestimo() para atualizar ou inserir um assinatura -->
-                    <button class="slds-button slds-button_brand" onclick="{!c.upsertEmprestimo}">Salvar</button>
+                    <!-- Botão que possui onclick que recebe a função upsertAssinatura() para atualizar ou inserir um assinatura -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertAssinatura}">Salvar</button>
                 </footer>
             </div>
         </section>
@@ -239,27 +268,30 @@
 
                         <!-- Definição dos inputs que receberá os atributos definidos nesse componente -->
                         <lightning:layoutItem padding="horizontal-small" size="12">
-                            <lightning:input type="checkbox" label="Devolvido" name="devolvido" checked="{!v.devolvido}"
-                                value="{!v.devolvido}" />
-                        </lightning:layoutItem>
-                        <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="text" value="{!v.nomePeriodico}" label="Nome do periodico:" disabled="true" />
-                        </lightning:layoutItem>
-                        <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="text" value="{!v.nome}" label="Nome do(a) Leitor(a):"
+                            <lightning:input type="text" value="{!v.nomePeriodico}" label="Nome do Periodico:"
                                 disabled="true" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="text" value="{!v.sobrenome}" label="Sobrenome do(a) Leitor(a):"
+                            <lightning:input type="text" value="{!v.nome}" label="Nome do(a) Periodico(a):"
                                 disabled="true" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="text" label="Tipo" disabled="true"
-                                value="{!v.tipoAssinatura}" />
+                            <lightning:input type="text" value="{!v.sobrenome}" label="Sobrenome do(a) Periodico(a):"
+                                disabled="true" />
                         </lightning:layoutItem>
                         <lightning:layoutItem padding="horizontal-small" size="6">
-                            <lightning:input type="date" label="Data da Assinatura" disabled="true"
-                                value="{!v.dataAssinatura}" />
+                            <lightning:select name="tipoId" label="Selecione o tipo de assinatura:" aura:id="tipoId"
+                                value="{!v.tipoAssinatura}">
+                                <!-- Defino os valores em items para percorrer -->
+                                <aura:iteration items="{!v.tipos}" var="tipo">
+                                    <!-- Atribuo para as opções de select o texto o valor e se está selecionado onde defino o atributo tipos -->
+                                    <option text="{!tipo.label}" value="{!tipo.value}" selected="{!tipo.selected}" />
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="6">
+                            <lightning:input type="date" name="dataAssinatura" label="Data do empréstimo"
+                                disabled="true" value="{!v.dataAssinatura}" />
                         </lightning:layoutItem>
 
                     </lightning:layout>
@@ -269,11 +301,11 @@
                     <!-- Botão que possui onclick para fechar meu detailModal -->
                     <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancelar</button>
 
-                    <!-- Botão que possui onclick que recebe a função upsertLeitor() para atualizar ou inserir um leitor -->
-                    <button class="slds-button slds-button_brand" onclick="{!c.upsertEmprestimo}">Salvar</button>
+                    <!-- Botão que possui onclick que recebe a função upsertPeriodico() para atualizar ou inserir um leitor -->
+                    <button class="slds-button slds-button_brand" onclick="{!c.upsertAssinatura}">Salvar</button>
                 </footer>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
     </aura:if>
-</aura:component>	
+</aura:component>
