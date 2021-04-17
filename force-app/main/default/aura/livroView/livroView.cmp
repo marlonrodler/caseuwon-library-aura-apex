@@ -34,11 +34,17 @@
     <!-- Criando um atributo que recebe uma String -->
     <aura:attribute name="quantidadeEmprestada" type="Integer" />
 
+    <!-- Criando um atributo que recebe uma String -->
+    <aura:attribute name="keyword" type="String" default="" />
+
     <!-- Criando um atributo que recebe uma Lista para realizar o filtro do campo Devolvido -->
     <aura:attribute name="categoriaLists" type="List" default="[
-        { id: 1, label: 'Pendente', value: 'Pendente' },
-        { id: 2, label: 'Emprestado', value: 'Emprestado' },
-        { id: 3, label: 'Cancelado', value: 'Cancelada' }
+        { id: 1, label: 'Ação', value: 'Acao' },
+        { id: 2, label: 'Aventura', value: 'Aventura' },
+        { id: 3, label: 'Comédia', value: 'Comedia' },
+        { id: 4, label: 'Ficção', value: 'Ficcao' },
+        { id: 5, label: 'Romance', value: 'Romance' },
+        { id: 6, label: 'Terror', value: 'Terror' },
     ]" />
 
     <!-- Criando um atributo que recebe o valor da lista categoriaLists que foi selecionada -->
@@ -51,6 +57,20 @@
             <!-- Crio um botão que executa uma função ao ser clicado (showModal do meu livroViewController) -->
             <lightning:button label="Novo" onclick="{!c.showModal}" name="novoLivro" />
         </aura:set>
+        <lightning:layout multipleRows="true" verticalAlign="end">
+
+            <lightning:layoutItem padding="horizontal-small" size="6">
+                <lightning:input aura:id="enter-search" name="enter-search"
+                    label="Insira a palavra chave e pressione 'Pesquisar'" type="search" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="2">
+                <!-- Crio um botão recebendo um onclick que dispara aa função handleClick -->
+                <lightning:button label="Pesquisar" iconName="utility:search" iconPosition="left"
+                    onclick="{! c.handleClick }" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
         <!-- Crio um paragrafo que recebe o tamanho (quantidade de registros) que tenho detron da minha lista de Livroes -->
         <p class="slds-p-horizontal_small">
             Total de registros: {! v.livros.length }

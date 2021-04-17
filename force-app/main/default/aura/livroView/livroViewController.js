@@ -29,7 +29,7 @@
     // Função para buscar todos os livros
     searchLivros: function (component, event, helper) {
         // Realizo a chamada da função buscaLivros na minha ApexControllerClass
-        let action = component.get('c.buscaLivros');
+        let action = component.get('c.buscaLivrosPorKeyword');
 
         // Realizo o callBack para validar a chamada e pegar a resposta
         action.setCallback(this, function (response) {
@@ -49,6 +49,21 @@
 
         // Coloco minha chamada na fila
         $A.enqueueAction(action);
+    },
+
+    // Função para disparar o searchEmpretimo com uma keyword
+    handleClick: function (cmp, evt) {
+        // Pego valor do meu enter-search (input definido na tela)
+        var keyword = cmp.find('enter-search').get('v.value');
+
+        // Seto esse valor para o meu atribudo keyword da tela
+        cmp.set('v.keyword', keyword);
+
+        // Realizo chamada na função searchLivros()
+        var searchReservas = cmp.get('c.searchLivros');
+
+        // Coloco minha chamada na fila
+        $A.enqueueAction(searchReservas);
     },
 
     // Função para definir as ações
