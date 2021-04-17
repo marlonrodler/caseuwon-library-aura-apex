@@ -9,7 +9,7 @@
 
         // Seto as label para minha v.columns
         component.set('v.columns', [
-            { label: 'Código do livro', fieldName: 'Codigo__c', type: 'text' },
+            { label: 'Código do livro', fieldName: 'Name', type: 'text' },
             { label: 'Título do livro', fieldName: 'Titulo__c', type: 'text' },
             { label: 'Autor do livro', fieldName: 'Autor__c', type: 'text' },
             { label: 'Quantidade', fieldName: 'Quantidade__c', type: 'number' },
@@ -30,6 +30,14 @@
     searchLivros: function (component, event, helper) {
         // Realizo a chamada da função buscaLivros na minha ApexControllerClass
         let action = component.get('c.buscaLivrosPorKeyword');
+
+        // Atribuo para keyword o valor do v.keyword
+        let keyword = component.get('v.keyword') || '';
+
+        // Seto os parametros necessarios para o funcionamento do método (action)
+        action.setParams({
+            keyword: keyword,
+        });
 
         // Realizo o callBack para validar a chamada e pegar a resposta
         action.setCallback(this, function (response) {
