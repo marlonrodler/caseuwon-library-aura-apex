@@ -108,12 +108,12 @@ public with sharing class ApexControllerClass
     // Deixo disponível para o Aura Component
     @AuraEnabled
     // Metodo estático que atualiza ou insere livro, retornando um único livro
-    public static Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade) 
+    public static Livro__c atualizaInsereLivro(Id livroId, String codigo, String titulo, String autor, Integer quantidade, String categoria)
     {
         // Instancio um objeto da classe LivroDAO
         LivroDAO livro = new LivroDAO();
         // Retorno o método criado na classe
-        return livro.atualizaInsereLivro(livroId, codigo, titulo, autor, quantidade);
+        return livro.atualizaInsereLivro(livroId, codigo, titulo, autor, quantidade, categoria);
     }
 
     // Deixo disponível para o Aura Component
