@@ -13,6 +13,7 @@
             { label: 'Título do livro', fieldName: 'Titulo__c', type: 'text' },
             { label: 'Autor do livro', fieldName: 'Autor__c', type: 'text' },
             { label: 'Quantidade', fieldName: 'Quantidade__c', type: 'number' },
+            { label: 'Categoria', fieldName: 'Categoria__c', type: 'text' },
             { label: 'Quantidade Disponível', fieldName: 'QuantidadeDisponivel__c', type: 'number' },
             { label: 'Quantidade Emprestada', fieldName: 'QuantidadeEmprestada__c', type: 'number' },
             { type: 'action', typeAttributes: { rowActions: actions } }
@@ -88,6 +89,7 @@
                         component.set('v.codigo', returnValue.Codigo__c);
                         component.set('v.titulo', returnValue.Titulo__c);
                         component.set('v.autor', returnValue.Autor__c);
+                        component.set('v.categoria', returnValue.Categoria__c);
                         component.set('v.quantidade', returnValue.Quantidade__c);
                         component.set('v.quantidadeDisponivel', returnValue.QuantidadeDisponivel__c);
                         component.set('v.quantidadeEmprestada', returnValue.QuantidadeEmprestada__c);
@@ -182,6 +184,7 @@
             codigo: component.get("v.codigo"),
             titulo: component.get("v.titulo"),
             autor: component.get("v.autor"),
+            categoria: component.get("v.categoria"),
             quantidade: component.get("v.quantidade")
         });
 
@@ -267,6 +270,7 @@
         component.set('v.quantidade', null);
         component.set('v.quantidadeDisponivel', null);
         component.set('v.quantidadeEmprestada', null);
+        component.set('v.categoria', '');
 
         // Seto para minha variável modal do componente livroView como verdadeira, abrindo assim meu modal
         component.set('v.modal', true);
@@ -282,6 +286,7 @@
         component.set('v.quantidade', null);
         component.set('v.quantidadeDisponivel', null);
         component.set('v.quantidadeEmprestada', null);
+        component.set('v.categoria', '');
 
         // Seto para minha variável modal do componente livroView como falsa, fechando assim meu modal
         component.set('v.modal', false);
