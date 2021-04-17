@@ -145,7 +145,7 @@ public with sharing class LivroDAO
             livro.Quantidade__c = quantidade;
         }
 
-        if (categoria != null)
+        if (categoria != '')
         {
             livro.Categoria__c = categoria;
         }
