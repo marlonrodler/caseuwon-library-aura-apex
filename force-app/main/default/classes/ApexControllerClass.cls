@@ -84,7 +84,7 @@ public with sharing class ApexControllerClass
     }
     
     @AuraEnabled
-    public static buscaLivrosPorKeyword(String keyword)  {
+    public static List<Livro__c> buscaLivrosPorKeyword(String keyword)  {
 
         LivroDAO livro = new LivroDAO();
 
