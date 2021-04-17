@@ -83,6 +83,50 @@ public with sharing class LivroDAO
                 QuantidadeDisponivel__c > 0
         ];
     }
+
+    public List<Livro__c> buscaLivrosPorKeyword(String keyword, String status)
+    {
+        // Defino dois filtros para validar com o campo Devolver__c
+        Boolean filter = true;
+        Boolean auxFilter = false;
+
+        // Concateno meu keyword com '%', ficando '%keyword%'
+        keyword = '%'+keyword+'%';
+
+        // Valido qual o valor que está vindo em status
+        if (status == 'T')
+        {
+            // Atribuo true para auxFilter
+            auxFilter = true;
+        }
+        else if (status == 'F')
+        {
+            // Atribuo true para filter
+            filter = false;
+        }
+
+        return [
+            SELECT
+                id,
+                Name__c,
+                Titulo__c,
+                Autor__c,
+                Quantidade__c,
+                QuantidadeDisponivel__c,
+                QuantidadeEmprestada__c,
+                Categoria__c
+            FROM
+                Livro__c
+            WHERE
+                (
+                    Name__c LIKE :keyword OR
+                    Titulo__c LIKE :keyword OR
+                    Autor__c LIKE :keyword OR
+                    Categoria__c
+                )
+            ORDER BY Name DESC
+        ];
+    }
     
     // Defino método para retornar uma lista de livro pelo seu Titulo através do parametro titulo
     public List<Livro__c> buscaLivrosPorTituloReserva(String titulo) 

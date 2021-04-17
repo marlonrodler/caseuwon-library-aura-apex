@@ -83,6 +83,14 @@ public with sharing class ApexControllerClass
         return livro.buscaLivroPorId(livroId);
     }
     
+    @AuraEnabled
+    public static buscaLivrosPorKeyword(String keyword, String status)  {
+
+        LivroDAO livro = new LivroDAO();
+
+        return livro.buscaLivrosPorKeyword(keyword, status);
+    }
+
     // Deixo disponível para o Aura Component
     @AuraEnabled
     // Metodo estático que retorna uma lista de livros, através do parametro titulo
