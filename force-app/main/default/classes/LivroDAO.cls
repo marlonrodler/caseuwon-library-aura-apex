@@ -200,7 +200,7 @@ public with sharing class LivroDAO
             upsert livro;
         } catch (DmlException e) {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LivroDAOException('Já possui um registro com o código: ' + e);
+            throw new LivroDAOException('Já possui um registro com o código: ' + codigo);
         }
 
         // Retorno o Livro que foi inserido ou atualizado através do método buscaLivroPorId()
