@@ -9,7 +9,7 @@
 
         // Seto as label para minha v.columns
         component.set('v.columns', [
-            { label: 'Código do livro', fieldName: 'Name', type: 'text' },
+            { label: 'Código do livro', fieldName: 'Codigo__c', type: 'text' },
             { label: 'Título do livro', fieldName: 'Titulo__c', type: 'text' },
             { label: 'Autor do livro', fieldName: 'Autor__c', type: 'text' },
             { label: 'Quantidade', fieldName: 'Quantidade__c', type: 'number' },
@@ -207,7 +207,7 @@
             codigo: component.get("v.codigo"),
             titulo: component.get("v.titulo"),
             autor: component.get("v.autor"),
-            categoria: component.get("v.categoria"),
+            categoria: component.get("v.categoria") || 'Acao',
             quantidade: component.get("v.quantidade")
         });
 

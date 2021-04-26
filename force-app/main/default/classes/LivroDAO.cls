@@ -10,7 +10,8 @@ public with sharing class LivroDAO
     {
         return [
             SELECT 
-                id, 
+                id,
+                Name, 
                 Codigo__c,
                 Titulo__c,
                 Autor__c,
@@ -29,7 +30,8 @@ public with sharing class LivroDAO
     {
         return [
             SELECT 
-                id, 
+                id,
+                Name, 
                 Codigo__c,
                 Titulo__c,
                 Autor__c,
@@ -48,7 +50,8 @@ public with sharing class LivroDAO
     {
         return [
             SELECT 
-                id, 
+                id,
+                Name, 
                 Codigo__c,
                 Titulo__c,
                 Autor__c,
@@ -68,7 +71,8 @@ public with sharing class LivroDAO
         titulo = '%'+titulo+'%';
         return [
             SELECT 
-                id, 
+                id,
+                Name, 
                 Codigo__c,
                 Titulo__c,
                 Autor__c,
@@ -97,6 +101,7 @@ public with sharing class LivroDAO
             SELECT
                 id,
                 Name,
+                Codigo__c,
                 Titulo__c,
                 Autor__c,
                 Quantidade__c,
@@ -122,7 +127,8 @@ public with sharing class LivroDAO
         titulo = '%'+titulo+'%';
         return [
             SELECT 
-                id, 
+                id,
+                Name, 
                 Codigo__c,
                 Titulo__c,
                 Autor__c,
@@ -194,7 +200,7 @@ public with sharing class LivroDAO
             upsert livro;
         } catch (DmlException e) {
             // Realizo um throw, instaciando um Exception customizado e atribuindo uma mensagem para ele
-            throw new LivroDAOException('Já possui um registro com o código: ' + codigo);
+            throw new LivroDAOException('Já possui um registro com o código: ' + e);
         }
 
         // Retorno o Livro que foi inserido ou atualizado através do método buscaLivroPorId()
